@@ -92,6 +92,13 @@
 		C7000025A1B2C3D4E5F60719 /* WorkspaceSidebarRuntimeModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001025A1B2C3D4E5F60719 /* WorkspaceSidebarRuntimeModels.swift */; };
 		C7000026A1B2C3D4E5F60719 /* WorkspaceSurfaceConfigSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001026A1B2C3D4E5F60719 /* WorkspaceSurfaceConfigSupport.swift */; };
 		C7000027A1B2C3D4E5F60719 /* CmuxCoreEventBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001027A1B2C3D4E5F60719 /* CmuxCoreEventBridge.swift */; };
+		C7000028A1B2C3D4E5F60719 /* CmuxBootstrap.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001028A1B2C3D4E5F60719 /* CmuxBootstrap.swift */; };
+		C7000029A1B2C3D4E5F60719 /* CmuxCoreCommandBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001029A1B2C3D4E5F60719 /* CmuxCoreCommandBridge.swift */; };
+		C7000030A1B2C3D4E5F60719 /* CmuxCoreEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001030A1B2C3D4E5F60719 /* CmuxCoreEvent.swift */; };
+		C7000031A1B2C3D4E5F60719 /* CmuxCoreEventReducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001031A1B2C3D4E5F60719 /* CmuxCoreEventReducer.swift */; };
+		C7000032A1B2C3D4E5F60719 /* CmuxCoreSessionSnapshotBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001032A1B2C3D4E5F60719 /* CmuxCoreSessionSnapshotBridge.swift */; };
+		C7000033A1B2C3D4E5F60719 /* CmuxCoreSnapshotBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001033A1B2C3D4E5F60719 /* CmuxCoreSnapshotBridge.swift */; };
+		C7000034A1B2C3D4E5F60719 /* CmuxCoreState.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001034A1B2C3D4E5F60719 /* CmuxCoreState.swift */; };
 		A5001100 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A5001101 /* Assets.xcassets */; };
 		A5001230 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = A5001231 /* Sparkle */; };
 		B9000002A1B2C3D4E5F60719 /* cmux.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9000001A1B2C3D4E5F60719 /* cmux.swift */; };
@@ -285,6 +292,13 @@
 		C7001025A1B2C3D4E5F60719 /* WorkspaceSidebarRuntimeModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceSidebarRuntimeModels.swift; sourceTree = "<group>"; };
 		C7001026A1B2C3D4E5F60719 /* WorkspaceSurfaceConfigSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceSurfaceConfigSupport.swift; sourceTree = "<group>"; };
 		C7001027A1B2C3D4E5F60719 /* CmuxCoreEventBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/CmuxCoreEventBridge.swift; sourceTree = "<group>"; };
+		C7001028A1B2C3D4E5F60719 /* CmuxBootstrap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/CmuxBootstrap.swift; sourceTree = "<group>"; };
+		C7001029A1B2C3D4E5F60719 /* CmuxCoreCommandBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/CmuxCoreCommandBridge.swift; sourceTree = "<group>"; };
+		C7001030A1B2C3D4E5F60719 /* CmuxCoreEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/CmuxCoreEvent.swift; sourceTree = "<group>"; };
+		C7001031A1B2C3D4E5F60719 /* CmuxCoreEventReducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/CmuxCoreEventReducer.swift; sourceTree = "<group>"; };
+		C7001032A1B2C3D4E5F60719 /* CmuxCoreSessionSnapshotBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/CmuxCoreSessionSnapshotBridge.swift; sourceTree = "<group>"; };
+		C7001033A1B2C3D4E5F60719 /* CmuxCoreSnapshotBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/CmuxCoreSnapshotBridge.swift; sourceTree = "<group>"; };
+		C7001034A1B2C3D4E5F60719 /* CmuxCoreState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/CmuxCoreState.swift; sourceTree = "<group>"; };
 		818DBCD4AB69EB72573E8138 /* SidebarResizeUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarResizeUITests.swift; sourceTree = "<group>"; };
 		B8F266256A1A3D9A45BD840F /* SidebarHelpMenuUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarHelpMenuUITests.swift; sourceTree = "<group>"; };
 		B8F266276A1A3D9A45BD840F /* DisplayResolutionRegressionUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayResolutionRegressionUITests.swift; sourceTree = "<group>"; };
@@ -529,6 +543,13 @@
 				C7001025A1B2C3D4E5F60719 /* WorkspaceSidebarRuntimeModels.swift */,
 				C7001026A1B2C3D4E5F60719 /* WorkspaceSurfaceConfigSupport.swift */,
 				C7001027A1B2C3D4E5F60719 /* CmuxCoreEventBridge.swift */,
+				C7001028A1B2C3D4E5F60719 /* CmuxBootstrap.swift */,
+				C7001029A1B2C3D4E5F60719 /* CmuxCoreCommandBridge.swift */,
+				C7001030A1B2C3D4E5F60719 /* CmuxCoreEvent.swift */,
+				C7001031A1B2C3D4E5F60719 /* CmuxCoreEventReducer.swift */,
+				C7001032A1B2C3D4E5F60719 /* CmuxCoreSessionSnapshotBridge.swift */,
+				C7001033A1B2C3D4E5F60719 /* CmuxCoreSnapshotBridge.swift */,
+				C7001034A1B2C3D4E5F60719 /* CmuxCoreState.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -848,6 +869,13 @@
 				C7000025A1B2C3D4E5F60719 /* WorkspaceSidebarRuntimeModels.swift in Sources */,
 				C7000026A1B2C3D4E5F60719 /* WorkspaceSurfaceConfigSupport.swift in Sources */,
 				C7000027A1B2C3D4E5F60719 /* CmuxCoreEventBridge.swift in Sources */,
+				C7000028A1B2C3D4E5F60719 /* CmuxBootstrap.swift in Sources */,
+				C7000029A1B2C3D4E5F60719 /* CmuxCoreCommandBridge.swift in Sources */,
+				C7000030A1B2C3D4E5F60719 /* CmuxCoreEvent.swift in Sources */,
+				C7000031A1B2C3D4E5F60719 /* CmuxCoreEventReducer.swift in Sources */,
+				C7000032A1B2C3D4E5F60719 /* CmuxCoreSessionSnapshotBridge.swift in Sources */,
+				C7000033A1B2C3D4E5F60719 /* CmuxCoreSnapshotBridge.swift in Sources */,
+				C7000034A1B2C3D4E5F60719 /* CmuxCoreState.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
