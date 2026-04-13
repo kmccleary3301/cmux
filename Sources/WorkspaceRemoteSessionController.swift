@@ -33,6 +33,22 @@ final class WorkspaceRemoteSessionController {
 
     private static let reverseRelayStartupGracePeriod: TimeInterval = 0.5
 
+    static func remoteRelayMetadataCleanupScript(relayPort: Int) -> String {
+        WorkspaceRemoteSessionRuntimeSupport.remoteRelayMetadataCleanupScript(relayPort: relayPort)
+    }
+
+    static func reverseRelayStartupFailureDetail(
+        process: Process,
+        stderrPipe: Pipe,
+        gracePeriod: TimeInterval = reverseRelayStartupGracePeriod
+    ) -> String? {
+        WorkspaceRemoteSessionRuntimeSupport.reverseRelayStartupFailureDetail(
+            process: process,
+            stderrPipe: stderrPipe,
+            gracePeriod: gracePeriod
+        )
+    }
+
     init(workspace: Workspace, configuration: WorkspaceRemoteConfiguration, controllerID: UUID) {
         self.workspace = workspace
         self.configuration = configuration

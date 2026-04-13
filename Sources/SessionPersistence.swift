@@ -1,6 +1,16 @@
 import Foundation
 
 enum SessionPersistenceStore {
+    static func defaultSnapshotFileURL(
+        bundleIdentifier: String? = Bundle.main.bundleIdentifier,
+        appSupportDirectory: URL? = nil
+    ) -> URL? {
+        sessionPersistenceDefaultSnapshotFileURL(
+            bundleIdentifier: bundleIdentifier,
+            appSupportDirectory: appSupportDirectory
+        )
+    }
+
     static func load(fileURL: URL? = nil) -> AppSessionSnapshot? {
         guard let fileURL = fileURL ?? sessionPersistenceDefaultSnapshotFileURL() else { return nil }
         guard let data = try? Data(contentsOf: fileURL) else { return nil }
