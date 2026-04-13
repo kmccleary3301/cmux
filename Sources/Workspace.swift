@@ -112,8 +112,8 @@ final class Workspace: Identifiable, ObservableObject {
     private var remoteLastPortConflictFingerprint: String?
     private var activeRemoteTerminalSurfaceIds: Set<UUID> = []
 
-    private static let remoteErrorStatusKey = "remote.error"
-    private static let remotePortConflictStatusKey = "remote.port_conflicts"
+    static let remoteErrorStatusKey = "remote.error"
+    static let remotePortConflictStatusKey = "remote.port_conflicts"
     private static let remoteHeartbeatDateFormatter: ISO8601DateFormatter = {
         let formatter = ISO8601DateFormatter()
         formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
@@ -124,25 +124,6 @@ final class Workspace: Identifiable, ObservableObject {
     /// Used for stale-session detection: if the PID is dead, the status entry is cleared.
     var agentPIDs: [String: pid_t] = [:]
     var restoredTerminalScrollbackByPanelId: [UUID: String] = [:]
-
-    private static func isProxyOnlyRemoteError(_ detail: String) -> Bool {
-        let lowered = detail.lowercased()
-        return lowered.contains("remote proxy")
-            || lowered.contains("proxy_unavailable")
-            || lowered.contains("local daemon proxy")
-            || lowered.contains("proxy failure")
-            || lowered.contains("daemon transport")
-    }
-
-    private var preservesSSHTerminalConnection: Bool {
-        activeRemoteTerminalSessionCount > 0
-            && remoteConfiguration?.terminalStartupCommand?.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty == false
-    }
-
-    private var hasProxyOnlyRemoteSidebarError: Bool {
-        guard let entry = statusEntries[Self.remoteErrorStatusKey]?.value else { return false }
-        return entry.lowercased().contains("remote proxy unavailable")
-    }
 
     var focusedSurfaceId: UUID? { focusedPanelId }
     var surfaceDirectories: [UUID: String] {
@@ -571,24 +552,6 @@ final class Workspace: Identifiable, ObservableObject {
                 )
             }
         panelSubscriptions[markdownPanel.id] = subscription
-    }
-
-    private func browserRemoteWorkspaceStatusSnapshot() -> BrowserRemoteWorkspaceStatus? {
-        guard let target = remoteDisplayTarget else { return nil }
-        return BrowserRemoteWorkspaceStatus(
-            target: target,
-            connectionState: remoteConnectionState,
-            heartbeatCount: remoteHeartbeatCount,
-            lastHeartbeatAt: remoteLastHeartbeatAt
-        )
-    }
-
-    private func applyBrowserRemoteWorkspaceStatusToPanels() {
-        let snapshot = browserRemoteWorkspaceStatusSnapshot()
-        for panel in panels.values {
-            guard let browserPanel = panel as? BrowserPanel else { continue }
-            browserPanel.setRemoteWorkspaceStatus(snapshot)
-        }
     }
 
     // MARK: - Panel Access
@@ -1597,17 +1560,6 @@ final class Workspace: Identifiable, ObservableObject {
             level: .warning,
             source: "remote-forward"
         )
-    }
-
-    private func appendSidebarLog(message: String, level: SidebarLogLevel, source: String?) {
-        let trimmed = message.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmed.isEmpty else { return }
-        logEntries.append(SidebarLogEntry(message: trimmed, level: level, source: source, timestamp: Date()))
-        let configuredLimit = UserDefaults.standard.object(forKey: "sidebarMaxLogEntries") as? Int ?? 50
-        let limit = max(1, min(500, configuredLimit))
-        if logEntries.count > limit {
-            logEntries.removeFirst(logEntries.count - limit)
-        }
     }
 
     // MARK: - Panel Operations
