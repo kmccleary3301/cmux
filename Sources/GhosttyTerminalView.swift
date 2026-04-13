@@ -3509,6 +3509,11 @@ final class TerminalSurface: Identifiable, ObservableObject {
         writeTextData(data, to: surface)
     }
 
+    func requestClose() {
+        guard let surface = surface else { return }
+        ghostty_surface_request_close(surface)
+    }
+
     func requestBackgroundSurfaceStartIfNeeded() {
         if !Thread.isMainThread {
             DispatchQueue.main.async { [weak self] in

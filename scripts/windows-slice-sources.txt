@@ -1,0 +1,17 @@
+Sources/Core/CmuxCoreState.swift
+Sources/Core/CmuxBootstrap.swift
+Sources/Core/CmuxCoreEvent.swift
+Sources/Core/CmuxCoreEventReducer.swift
+Sources/Core/CmuxCoreSessionSnapshotBridge.swift
+Sources/PanelType.swift
+Sources/SidebarSelection.swift
+Sources/SessionSnapshotModels.swift
+Sources/SessionSplitOrientation.swift
+Sources/SessionPersistenceSupport.swift
+Sources/Windows/CmuxWindowsSmokeHarness.swift
+Sources/Windows/CmuxWindowsGhosttyBridge.swift
+Sources/Windows/CmuxWindowsNotificationHost.swift
+Sources/Windows/CmuxWindowsBrowserHost.swift
+Sources/Windows/CmuxWindowsBrowserPortalView.swift
+Sources/Windows/CmuxWindowsShellView.swift
+Sources/Windows/CmuxWindowsBootstrapMain.swift
