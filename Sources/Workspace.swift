@@ -1535,7 +1535,7 @@ final class Workspace: Identifiable, ObservableObject {
         }
     }
 
-    fileprivate func applyRemoteDaemonStatusUpdate(_ status: WorkspaceRemoteDaemonStatus, target: String) {
+    func applyRemoteDaemonStatusUpdate(_ status: WorkspaceRemoteDaemonStatus, target: String) {
         remoteDaemonStatus = status
         applyBrowserRemoteWorkspaceStatusToPanels()
         guard status.state == .error else {
@@ -1553,7 +1553,7 @@ final class Workspace: Identifiable, ObservableObject {
         )
     }
 
-    fileprivate func applyRemoteProxyEndpointUpdate(_ endpoint: BrowserProxyEndpoint?) {
+    func applyRemoteProxyEndpointUpdate(_ endpoint: BrowserProxyEndpoint?) {
         remoteProxyEndpoint = endpoint
         for panel in panels.values {
             guard let browserPanel = panel as? BrowserPanel else { continue }
@@ -1562,13 +1562,13 @@ final class Workspace: Identifiable, ObservableObject {
         applyBrowserRemoteWorkspaceStatusToPanels()
     }
 
-    fileprivate func applyRemoteHeartbeatUpdate(count: Int, lastSeenAt: Date?) {
+    func applyRemoteHeartbeatUpdate(count: Int, lastSeenAt: Date?) {
         remoteHeartbeatCount = max(0, count)
         remoteLastHeartbeatAt = lastSeenAt
         applyBrowserRemoteWorkspaceStatusToPanels()
     }
 
-    fileprivate func applyRemotePortsSnapshot(detected: [Int], forwarded: [Int], conflicts: [Int], target: String) {
+    func applyRemotePortsSnapshot(detected: [Int], forwarded: [Int], conflicts: [Int], target: String) {
         remoteDetectedPorts = detected
         remoteForwardedPorts = forwarded
         remotePortConflicts = conflicts
