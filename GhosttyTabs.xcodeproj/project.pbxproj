@@ -65,6 +65,32 @@
 		A5001209 /* WindowToolbarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5001219 /* WindowToolbarController.swift */; };
 		A5001240 /* WindowDecorationsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5001241 /* WindowDecorationsController.swift */; };
 		A5001610 /* SessionPersistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5001611 /* SessionPersistence.swift */; };
+		C7000001A1B2C3D4E5F60719 /* FocusFlashPattern.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001001A1B2C3D4E5F60719 /* FocusFlashPattern.swift */; };
+		C7000002A1B2C3D4E5F60719 /* PanelFocusIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001002A1B2C3D4E5F60719 /* PanelFocusIntent.swift */; };
+		C7000003A1B2C3D4E5F60719 /* PanelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001003A1B2C3D4E5F60719 /* PanelType.swift */; };
+		C7000004A1B2C3D4E5F60719 /* RemoteLoopbackHTTPRewriters.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001004A1B2C3D4E5F60719 /* RemoteLoopbackHTTPRewriters.swift */; };
+		C7000005A1B2C3D4E5F60719 /* SessionPersistenceSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001005A1B2C3D4E5F60719 /* SessionPersistenceSupport.swift */; };
+		C7000006A1B2C3D4E5F60719 /* SessionPersistenceURLSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001006A1B2C3D4E5F60719 /* SessionPersistenceURLSupport.swift */; };
+		C7000007A1B2C3D4E5F60719 /* SessionSnapshotModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001007A1B2C3D4E5F60719 /* SessionSnapshotModels.swift */; };
+		C7000008A1B2C3D4E5F60719 /* SessionSplitOrientation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001008A1B2C3D4E5F60719 /* SessionSplitOrientation.swift */; };
+		C7000009A1B2C3D4E5F60719 /* SidebarMetadataModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001009A1B2C3D4E5F60719 /* SidebarMetadataModels.swift */; };
+		C7000010A1B2C3D4E5F60719 /* SidebarRemoteErrorSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001010A1B2C3D4E5F60719 /* SidebarRemoteErrorSupport.swift */; };
+		C7000011A1B2C3D4E5F60719 /* SidebarSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001011A1B2C3D4E5F60719 /* SidebarSelection.swift */; };
+		C7000012A1B2C3D4E5F60719 /* WorkspaceRemoteCLIRelayServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001012A1B2C3D4E5F60719 /* WorkspaceRemoteCLIRelayServer.swift */; };
+		C7000013A1B2C3D4E5F60719 /* WorkspaceRemoteDaemonManifest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001013A1B2C3D4E5F60719 /* WorkspaceRemoteDaemonManifest.swift */; };
+		C7000014A1B2C3D4E5F60719 /* WorkspaceRemoteDaemonPendingCallRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001014A1B2C3D4E5F60719 /* WorkspaceRemoteDaemonPendingCallRegistry.swift */; };
+		C7000015A1B2C3D4E5F60719 /* WorkspaceRemoteDaemonProxyTunnel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001015A1B2C3D4E5F60719 /* WorkspaceRemoteDaemonProxyTunnel.swift */; };
+		C7000016A1B2C3D4E5F60719 /* WorkspaceRemoteDaemonRPCClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001016A1B2C3D4E5F60719 /* WorkspaceRemoteDaemonRPCClient.swift */; };
+		C7000017A1B2C3D4E5F60719 /* WorkspaceRemoteProcessRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001017A1B2C3D4E5F60719 /* WorkspaceRemoteProcessRunner.swift */; };
+		C7000018A1B2C3D4E5F60719 /* WorkspaceRemoteProxyBroker.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001018A1B2C3D4E5F60719 /* WorkspaceRemoteProxyBroker.swift */; };
+		C7000019A1B2C3D4E5F60719 /* WorkspaceRemoteSSHSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001019A1B2C3D4E5F60719 /* WorkspaceRemoteSSHSupport.swift */; };
+		C7000020A1B2C3D4E5F60719 /* WorkspaceRemoteSessionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001020A1B2C3D4E5F60719 /* WorkspaceRemoteSessionController.swift */; };
+		C7000021A1B2C3D4E5F60719 /* WorkspaceRemoteSessionRuntimeSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001021A1B2C3D4E5F60719 /* WorkspaceRemoteSessionRuntimeSupport.swift */; };
+		C7000022A1B2C3D4E5F60719 /* WorkspaceRemoteSessionSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001022A1B2C3D4E5F60719 /* WorkspaceRemoteSessionSupport.swift */; };
+		C7000023A1B2C3D4E5F60719 /* WorkspaceSessionSnapshotBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001023A1B2C3D4E5F60719 /* WorkspaceSessionSnapshotBridge.swift */; };
+		C7000024A1B2C3D4E5F60719 /* WorkspaceSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001024A1B2C3D4E5F60719 /* WorkspaceSettings.swift */; };
+		C7000025A1B2C3D4E5F60719 /* WorkspaceSidebarRuntimeModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001025A1B2C3D4E5F60719 /* WorkspaceSidebarRuntimeModels.swift */; };
+		C7000026A1B2C3D4E5F60719 /* WorkspaceSurfaceConfigSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001026A1B2C3D4E5F60719 /* WorkspaceSurfaceConfigSupport.swift */; };
 		A5001100 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A5001101 /* Assets.xcassets */; };
 		A5001230 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = A5001231 /* Sparkle */; };
 		B9000002A1B2C3D4E5F60719 /* cmux.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9000001A1B2C3D4E5F60719 /* cmux.swift */; };
@@ -231,6 +257,32 @@
 		A5001223 /* UpdateLogStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Update/UpdateLogStore.swift; sourceTree = "<group>"; };
 		A5001241 /* WindowDecorationsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowDecorationsController.swift; sourceTree = "<group>"; };
 		A5001611 /* SessionPersistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionPersistence.swift; sourceTree = "<group>"; };
+		C7001001A1B2C3D4E5F60719 /* FocusFlashPattern.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusFlashPattern.swift; sourceTree = "<group>"; };
+		C7001002A1B2C3D4E5F60719 /* PanelFocusIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanelFocusIntent.swift; sourceTree = "<group>"; };
+		C7001003A1B2C3D4E5F60719 /* PanelType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanelType.swift; sourceTree = "<group>"; };
+		C7001004A1B2C3D4E5F60719 /* RemoteLoopbackHTTPRewriters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteLoopbackHTTPRewriters.swift; sourceTree = "<group>"; };
+		C7001005A1B2C3D4E5F60719 /* SessionPersistenceSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionPersistenceSupport.swift; sourceTree = "<group>"; };
+		C7001006A1B2C3D4E5F60719 /* SessionPersistenceURLSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionPersistenceURLSupport.swift; sourceTree = "<group>"; };
+		C7001007A1B2C3D4E5F60719 /* SessionSnapshotModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionSnapshotModels.swift; sourceTree = "<group>"; };
+		C7001008A1B2C3D4E5F60719 /* SessionSplitOrientation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionSplitOrientation.swift; sourceTree = "<group>"; };
+		C7001009A1B2C3D4E5F60719 /* SidebarMetadataModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarMetadataModels.swift; sourceTree = "<group>"; };
+		C7001010A1B2C3D4E5F60719 /* SidebarRemoteErrorSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarRemoteErrorSupport.swift; sourceTree = "<group>"; };
+		C7001011A1B2C3D4E5F60719 /* SidebarSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarSelection.swift; sourceTree = "<group>"; };
+		C7001012A1B2C3D4E5F60719 /* WorkspaceRemoteCLIRelayServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceRemoteCLIRelayServer.swift; sourceTree = "<group>"; };
+		C7001013A1B2C3D4E5F60719 /* WorkspaceRemoteDaemonManifest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceRemoteDaemonManifest.swift; sourceTree = "<group>"; };
+		C7001014A1B2C3D4E5F60719 /* WorkspaceRemoteDaemonPendingCallRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceRemoteDaemonPendingCallRegistry.swift; sourceTree = "<group>"; };
+		C7001015A1B2C3D4E5F60719 /* WorkspaceRemoteDaemonProxyTunnel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceRemoteDaemonProxyTunnel.swift; sourceTree = "<group>"; };
+		C7001016A1B2C3D4E5F60719 /* WorkspaceRemoteDaemonRPCClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceRemoteDaemonRPCClient.swift; sourceTree = "<group>"; };
+		C7001017A1B2C3D4E5F60719 /* WorkspaceRemoteProcessRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceRemoteProcessRunner.swift; sourceTree = "<group>"; };
+		C7001018A1B2C3D4E5F60719 /* WorkspaceRemoteProxyBroker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceRemoteProxyBroker.swift; sourceTree = "<group>"; };
+		C7001019A1B2C3D4E5F60719 /* WorkspaceRemoteSSHSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceRemoteSSHSupport.swift; sourceTree = "<group>"; };
+		C7001020A1B2C3D4E5F60719 /* WorkspaceRemoteSessionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceRemoteSessionController.swift; sourceTree = "<group>"; };
+		C7001021A1B2C3D4E5F60719 /* WorkspaceRemoteSessionRuntimeSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceRemoteSessionRuntimeSupport.swift; sourceTree = "<group>"; };
+		C7001022A1B2C3D4E5F60719 /* WorkspaceRemoteSessionSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceRemoteSessionSupport.swift; sourceTree = "<group>"; };
+		C7001023A1B2C3D4E5F60719 /* WorkspaceSessionSnapshotBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceSessionSnapshotBridge.swift; sourceTree = "<group>"; };
+		C7001024A1B2C3D4E5F60719 /* WorkspaceSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceSettings.swift; sourceTree = "<group>"; };
+		C7001025A1B2C3D4E5F60719 /* WorkspaceSidebarRuntimeModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceSidebarRuntimeModels.swift; sourceTree = "<group>"; };
+		C7001026A1B2C3D4E5F60719 /* WorkspaceSurfaceConfigSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceSurfaceConfigSupport.swift; sourceTree = "<group>"; };
 		818DBCD4AB69EB72573E8138 /* SidebarResizeUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarResizeUITests.swift; sourceTree = "<group>"; };
 		B8F266256A1A3D9A45BD840F /* SidebarHelpMenuUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarHelpMenuUITests.swift; sourceTree = "<group>"; };
 		B8F266276A1A3D9A45BD840F /* DisplayResolutionRegressionUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayResolutionRegressionUITests.swift; sourceTree = "<group>"; };
@@ -448,6 +500,32 @@
 				A5001241 /* WindowDecorationsController.swift */,
 				A5001222 /* WindowAccessor.swift */,
 				A5001611 /* SessionPersistence.swift */,
+				C7001001A1B2C3D4E5F60719 /* FocusFlashPattern.swift */,
+				C7001002A1B2C3D4E5F60719 /* PanelFocusIntent.swift */,
+				C7001003A1B2C3D4E5F60719 /* PanelType.swift */,
+				C7001004A1B2C3D4E5F60719 /* RemoteLoopbackHTTPRewriters.swift */,
+				C7001005A1B2C3D4E5F60719 /* SessionPersistenceSupport.swift */,
+				C7001006A1B2C3D4E5F60719 /* SessionPersistenceURLSupport.swift */,
+				C7001007A1B2C3D4E5F60719 /* SessionSnapshotModels.swift */,
+				C7001008A1B2C3D4E5F60719 /* SessionSplitOrientation.swift */,
+				C7001009A1B2C3D4E5F60719 /* SidebarMetadataModels.swift */,
+				C7001010A1B2C3D4E5F60719 /* SidebarRemoteErrorSupport.swift */,
+				C7001011A1B2C3D4E5F60719 /* SidebarSelection.swift */,
+				C7001012A1B2C3D4E5F60719 /* WorkspaceRemoteCLIRelayServer.swift */,
+				C7001013A1B2C3D4E5F60719 /* WorkspaceRemoteDaemonManifest.swift */,
+				C7001014A1B2C3D4E5F60719 /* WorkspaceRemoteDaemonPendingCallRegistry.swift */,
+				C7001015A1B2C3D4E5F60719 /* WorkspaceRemoteDaemonProxyTunnel.swift */,
+				C7001016A1B2C3D4E5F60719 /* WorkspaceRemoteDaemonRPCClient.swift */,
+				C7001017A1B2C3D4E5F60719 /* WorkspaceRemoteProcessRunner.swift */,
+				C7001018A1B2C3D4E5F60719 /* WorkspaceRemoteProxyBroker.swift */,
+				C7001019A1B2C3D4E5F60719 /* WorkspaceRemoteSSHSupport.swift */,
+				C7001020A1B2C3D4E5F60719 /* WorkspaceRemoteSessionController.swift */,
+				C7001021A1B2C3D4E5F60719 /* WorkspaceRemoteSessionRuntimeSupport.swift */,
+				C7001022A1B2C3D4E5F60719 /* WorkspaceRemoteSessionSupport.swift */,
+				C7001023A1B2C3D4E5F60719 /* WorkspaceSessionSnapshotBridge.swift */,
+				C7001024A1B2C3D4E5F60719 /* WorkspaceSettings.swift */,
+				C7001025A1B2C3D4E5F60719 /* WorkspaceSidebarRuntimeModels.swift */,
+				C7001026A1B2C3D4E5F60719 /* WorkspaceSurfaceConfigSupport.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -740,6 +818,32 @@
 				A5001240 /* WindowDecorationsController.swift in Sources */,
 				A500120C /* WindowAccessor.swift in Sources */,
 				A5001610 /* SessionPersistence.swift in Sources */,
+				C7000001A1B2C3D4E5F60719 /* FocusFlashPattern.swift in Sources */,
+				C7000002A1B2C3D4E5F60719 /* PanelFocusIntent.swift in Sources */,
+				C7000003A1B2C3D4E5F60719 /* PanelType.swift in Sources */,
+				C7000004A1B2C3D4E5F60719 /* RemoteLoopbackHTTPRewriters.swift in Sources */,
+				C7000005A1B2C3D4E5F60719 /* SessionPersistenceSupport.swift in Sources */,
+				C7000006A1B2C3D4E5F60719 /* SessionPersistenceURLSupport.swift in Sources */,
+				C7000007A1B2C3D4E5F60719 /* SessionSnapshotModels.swift in Sources */,
+				C7000008A1B2C3D4E5F60719 /* SessionSplitOrientation.swift in Sources */,
+				C7000009A1B2C3D4E5F60719 /* SidebarMetadataModels.swift in Sources */,
+				C7000010A1B2C3D4E5F60719 /* SidebarRemoteErrorSupport.swift in Sources */,
+				C7000011A1B2C3D4E5F60719 /* SidebarSelection.swift in Sources */,
+				C7000012A1B2C3D4E5F60719 /* WorkspaceRemoteCLIRelayServer.swift in Sources */,
+				C7000013A1B2C3D4E5F60719 /* WorkspaceRemoteDaemonManifest.swift in Sources */,
+				C7000014A1B2C3D4E5F60719 /* WorkspaceRemoteDaemonPendingCallRegistry.swift in Sources */,
+				C7000015A1B2C3D4E5F60719 /* WorkspaceRemoteDaemonProxyTunnel.swift in Sources */,
+				C7000016A1B2C3D4E5F60719 /* WorkspaceRemoteDaemonRPCClient.swift in Sources */,
+				C7000017A1B2C3D4E5F60719 /* WorkspaceRemoteProcessRunner.swift in Sources */,
+				C7000018A1B2C3D4E5F60719 /* WorkspaceRemoteProxyBroker.swift in Sources */,
+				C7000019A1B2C3D4E5F60719 /* WorkspaceRemoteSSHSupport.swift in Sources */,
+				C7000020A1B2C3D4E5F60719 /* WorkspaceRemoteSessionController.swift in Sources */,
+				C7000021A1B2C3D4E5F60719 /* WorkspaceRemoteSessionRuntimeSupport.swift in Sources */,
+				C7000022A1B2C3D4E5F60719 /* WorkspaceRemoteSessionSupport.swift in Sources */,
+				C7000023A1B2C3D4E5F60719 /* WorkspaceSessionSnapshotBridge.swift in Sources */,
+				C7000024A1B2C3D4E5F60719 /* WorkspaceSettings.swift in Sources */,
+				C7000025A1B2C3D4E5F60719 /* WorkspaceSidebarRuntimeModels.swift in Sources */,
+				C7000026A1B2C3D4E5F60719 /* WorkspaceSurfaceConfigSupport.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
