@@ -93,6 +93,7 @@
 		C7000026A1B2C3D4E5F60719 /* WorkspaceSurfaceConfigSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001026A1B2C3D4E5F60719 /* WorkspaceSurfaceConfigSupport.swift */; };
 		C7000035A1B2C3D4E5F60719 /* WorkspaceBrowserPaneSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001035A1B2C3D4E5F60719 /* WorkspaceBrowserPaneSupport.swift */; };
 		C7000036A1B2C3D4E5F60719 /* WorkspaceRemoteStatusSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001036A1B2C3D4E5F60719 /* WorkspaceRemoteStatusSupport.swift */; };
+		C7000037A1B2C3D4E5F60719 /* WorkspaceRemoteConnectionSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001037A1B2C3D4E5F60719 /* WorkspaceRemoteConnectionSupport.swift */; };
 		C7000027A1B2C3D4E5F60719 /* CmuxCoreEventBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001027A1B2C3D4E5F60719 /* CmuxCoreEventBridge.swift */; };
 		C7000028A1B2C3D4E5F60719 /* CmuxBootstrap.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001028A1B2C3D4E5F60719 /* CmuxBootstrap.swift */; };
 		C7000029A1B2C3D4E5F60719 /* CmuxCoreCommandBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001029A1B2C3D4E5F60719 /* CmuxCoreCommandBridge.swift */; };
@@ -295,6 +296,7 @@
 		C7001026A1B2C3D4E5F60719 /* WorkspaceSurfaceConfigSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceSurfaceConfigSupport.swift; sourceTree = "<group>"; };
 		C7001035A1B2C3D4E5F60719 /* WorkspaceBrowserPaneSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceBrowserPaneSupport.swift; sourceTree = "<group>"; };
 		C7001036A1B2C3D4E5F60719 /* WorkspaceRemoteStatusSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceRemoteStatusSupport.swift; sourceTree = "<group>"; };
+		C7001037A1B2C3D4E5F60719 /* WorkspaceRemoteConnectionSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceRemoteConnectionSupport.swift; sourceTree = "<group>"; };
 		C7001027A1B2C3D4E5F60719 /* CmuxCoreEventBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/CmuxCoreEventBridge.swift; sourceTree = "<group>"; };
 		C7001028A1B2C3D4E5F60719 /* CmuxBootstrap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/CmuxBootstrap.swift; sourceTree = "<group>"; };
 		C7001029A1B2C3D4E5F60719 /* CmuxCoreCommandBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/CmuxCoreCommandBridge.swift; sourceTree = "<group>"; };
@@ -548,6 +550,7 @@
 				C7001026A1B2C3D4E5F60719 /* WorkspaceSurfaceConfigSupport.swift */,
 				C7001035A1B2C3D4E5F60719 /* WorkspaceBrowserPaneSupport.swift */,
 				C7001036A1B2C3D4E5F60719 /* WorkspaceRemoteStatusSupport.swift */,
+				C7001037A1B2C3D4E5F60719 /* WorkspaceRemoteConnectionSupport.swift */,
 				C7001027A1B2C3D4E5F60719 /* CmuxCoreEventBridge.swift */,
 				C7001028A1B2C3D4E5F60719 /* CmuxBootstrap.swift */,
 				C7001029A1B2C3D4E5F60719 /* CmuxCoreCommandBridge.swift */,
@@ -876,6 +879,7 @@
 				C7000026A1B2C3D4E5F60719 /* WorkspaceSurfaceConfigSupport.swift in Sources */,
 				C7000035A1B2C3D4E5F60719 /* WorkspaceBrowserPaneSupport.swift in Sources */,
 				C7000036A1B2C3D4E5F60719 /* WorkspaceRemoteStatusSupport.swift in Sources */,
+				C7000037A1B2C3D4E5F60719 /* WorkspaceRemoteConnectionSupport.swift in Sources */,
 				C7000027A1B2C3D4E5F60719 /* CmuxCoreEventBridge.swift in Sources */,
 				C7000028A1B2C3D4E5F60719 /* CmuxBootstrap.swift in Sources */,
 				C7000029A1B2C3D4E5F60719 /* CmuxCoreCommandBridge.swift in Sources */,
