@@ -46,6 +46,7 @@ enum WorkspaceBrowserPaneSupport {
         }
     }
 
+    @MainActor
     static func closedBrowserRestoreSnapshot(
         workspaceId: UUID,
         browserPanel: BrowserPanel,
