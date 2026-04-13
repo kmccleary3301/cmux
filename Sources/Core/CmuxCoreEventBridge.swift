@@ -23,6 +23,8 @@ extension TabManager {
             enqueuePanelTitleUpdate(tabId: workspaceID, panelId: panelID, title: title)
         case .surfaceFocused(let workspaceID, let panelID):
             markPanelReadOnFocusIfActive(tabId: workspaceID, panelId: panelID)
+        case .surfaceClosed, .browserLocationChanged:
+            break
         }
     }
 

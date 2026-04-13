@@ -2640,7 +2640,7 @@ class TabManager: ObservableObject {
         markPanelReadOnFocusIfActive(tabId: tabId, panelId: panelId)
     }
 
-    private func markPanelReadOnFocusIfActive(tabId: UUID, panelId: UUID) {
+    func markPanelReadOnFocusIfActive(tabId: UUID, panelId: UUID) {
         guard selectedTabId == tabId else { return }
         guard !suppressFocusFlash else { return }
         guard AppFocusState.isAppActive() else { return }
@@ -2666,7 +2666,7 @@ class TabManager: ObservableObject {
         return true
     }
 
-    private func enqueuePanelTitleUpdate(tabId: UUID, panelId: UUID, title: String) {
+    func enqueuePanelTitleUpdate(tabId: UUID, panelId: UUID, title: String) {
         let trimmed = title.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
         let key = PanelTitleUpdateKey(tabId: tabId, panelId: panelId)
