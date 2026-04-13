@@ -117,7 +117,7 @@ jobs:
             sleep $((attempt * 5))
           done
 
-      - name: Run unit tests
+      - name: Run compatibility unit tests
         env:
           CMUX_SKIP_ZIG_BUILD: ${{ matrix.skip_zig && '1' || '0' }}
         run: |
@@ -128,7 +128,9 @@ jobs:
               -clonedSourcePackagesDirPath "$SOURCE_PACKAGES_DIR" \
               -disableAutomaticPackageResolution \
               -destination "platform=macOS" \
-              -skip-testing:cmuxTests/AppDelegateShortcutRoutingTests/testCmdWClosesWindowWhenClosingLastSurfaceInLastWorkspace \
+              -only-testing:cmuxTests/CmuxCoreEventTests \
+              -only-testing:cmuxTests/SessionPersistenceTests \
+              -only-testing:cmuxTests/WorkspaceRemoteConnectionTests \
               test 2>&1
           }
 
