@@ -91,6 +91,7 @@
 		C7000024A1B2C3D4E5F60719 /* WorkspaceSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001024A1B2C3D4E5F60719 /* WorkspaceSettings.swift */; };
 		C7000025A1B2C3D4E5F60719 /* WorkspaceSidebarRuntimeModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001025A1B2C3D4E5F60719 /* WorkspaceSidebarRuntimeModels.swift */; };
 		C7000026A1B2C3D4E5F60719 /* WorkspaceSurfaceConfigSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001026A1B2C3D4E5F60719 /* WorkspaceSurfaceConfigSupport.swift */; };
+		C7000027A1B2C3D4E5F60719 /* CmuxCoreEventBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001027A1B2C3D4E5F60719 /* CmuxCoreEventBridge.swift */; };
 		A5001100 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A5001101 /* Assets.xcassets */; };
 		A5001230 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = A5001231 /* Sparkle */; };
 		B9000002A1B2C3D4E5F60719 /* cmux.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9000001A1B2C3D4E5F60719 /* cmux.swift */; };
@@ -283,6 +284,7 @@
 		C7001024A1B2C3D4E5F60719 /* WorkspaceSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceSettings.swift; sourceTree = "<group>"; };
 		C7001025A1B2C3D4E5F60719 /* WorkspaceSidebarRuntimeModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceSidebarRuntimeModels.swift; sourceTree = "<group>"; };
 		C7001026A1B2C3D4E5F60719 /* WorkspaceSurfaceConfigSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceSurfaceConfigSupport.swift; sourceTree = "<group>"; };
+		C7001027A1B2C3D4E5F60719 /* CmuxCoreEventBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/CmuxCoreEventBridge.swift; sourceTree = "<group>"; };
 		818DBCD4AB69EB72573E8138 /* SidebarResizeUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarResizeUITests.swift; sourceTree = "<group>"; };
 		B8F266256A1A3D9A45BD840F /* SidebarHelpMenuUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarHelpMenuUITests.swift; sourceTree = "<group>"; };
 		B8F266276A1A3D9A45BD840F /* DisplayResolutionRegressionUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayResolutionRegressionUITests.swift; sourceTree = "<group>"; };
@@ -526,6 +528,7 @@
 				C7001024A1B2C3D4E5F60719 /* WorkspaceSettings.swift */,
 				C7001025A1B2C3D4E5F60719 /* WorkspaceSidebarRuntimeModels.swift */,
 				C7001026A1B2C3D4E5F60719 /* WorkspaceSurfaceConfigSupport.swift */,
+				C7001027A1B2C3D4E5F60719 /* CmuxCoreEventBridge.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -844,6 +847,7 @@
 				C7000024A1B2C3D4E5F60719 /* WorkspaceSettings.swift in Sources */,
 				C7000025A1B2C3D4E5F60719 /* WorkspaceSidebarRuntimeModels.swift in Sources */,
 				C7000026A1B2C3D4E5F60719 /* WorkspaceSurfaceConfigSupport.swift in Sources */,
+				C7000027A1B2C3D4E5F60719 /* CmuxCoreEventBridge.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

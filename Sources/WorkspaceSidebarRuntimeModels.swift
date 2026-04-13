@@ -222,7 +222,7 @@ enum SidebarBranchOrdering {
         return homeDirectory
     }
 
-    fileprivate static func inferredRemoteHomeDirectory(
+    static func inferredRemoteHomeDirectory(
         from directories: [String],
         fallbackDirectory: String?
     ) -> String? {
@@ -272,7 +272,7 @@ enum SidebarBranchOrdering {
         return NSString(string: homeDirectory).appendingPathComponent(relativePath)
     }
 
-    fileprivate static func canonicalDirectoryKey(
+    static func canonicalDirectoryKey(
         _ directory: String?,
         homeDirectoryForTildeExpansion: String?
     ) -> String? {
