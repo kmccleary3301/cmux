@@ -784,7 +784,7 @@ final class WorkspaceRemoteSessionController {
 
     private func debugLog(_ message: @autoclosure () -> String) {
 #if DEBUG
-        dlog(message())
+        debugLog(message())
 #endif
     }
 

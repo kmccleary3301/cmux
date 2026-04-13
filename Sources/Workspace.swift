@@ -106,7 +106,7 @@ final class Workspace: Identifiable, ObservableObject {
     @Published private(set) var activeRemoteTerminalSessionCount: Int = 0
     var surfaceTTYNames: [UUID: String] = [:]
     private var remoteSessionController: WorkspaceRemoteSessionController?
-    fileprivate var activeRemoteSessionControllerID: UUID?
+    var activeRemoteSessionControllerID: UUID?
     private var remoteLastErrorFingerprint: String?
     private var remoteLastDaemonErrorFingerprint: String?
     private var remoteLastPortConflictFingerprint: String?
@@ -123,7 +123,7 @@ final class Workspace: Identifiable, ObservableObject {
     /// PIDs associated with agent status entries (e.g. claude_code), keyed by status key.
     /// Used for stale-session detection: if the PID is dead, the status entry is cleared.
     var agentPIDs: [String: pid_t] = [:]
-    private var restoredTerminalScrollbackByPanelId: [UUID: String] = [:]
+    var restoredTerminalScrollbackByPanelId: [UUID: String] = [:]
 
     private static func isProxyOnlyRemoteError(_ detail: String) -> Bool {
         let lowered = detail.lowercased()
@@ -150,7 +150,7 @@ final class Workspace: Identifiable, ObservableObject {
         set { panelDirectories = newValue }
     }
 
-    private var processTitle: String
+    var processTitle: String
 
     private enum SurfaceKind {
         static let terminal = "terminal"
@@ -384,7 +384,7 @@ final class Workspace: Identifiable, ObservableObject {
     // MARK: - Surface ID to Panel ID Mapping
 
     /// Mapping from bonsplit TabID (surface ID) to panel UUID
-    private var surfaceIdToPanelId: [TabID: UUID] = [:]
+    var surfaceIdToPanelId: [TabID: UUID] = [:]
 
     /// Tab IDs that are allowed to close even if they would normally require confirmation.
     /// This is used by app-level confirmation prompts (e.g., Cmd+W "Close Tab?") so the
@@ -3286,7 +3286,7 @@ final class Workspace: Identifiable, ObservableObject {
 
     /// Reconcile focus/first-responder convergence.
     /// Coalesce to the next main-queue turn so bonsplit selection/pane mutations settle first.
-    private func scheduleFocusReconcile() {
+    func scheduleFocusReconcile() {
 #if DEBUG
         if isDetachingCloseTransaction {
             debugFocusReconcileScheduledDuringDetachCount += 1

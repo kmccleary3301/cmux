@@ -2,7 +2,7 @@ import Foundation
 
 private func workspaceSettingsLocalized(_ key: String, defaultValue: String) -> String {
 #if os(macOS)
-    return String(localized: String.LocalizationValue(key), defaultValue: defaultValue)
+    return NSLocalizedString(key, bundle: .main, value: defaultValue, comment: "")
 #else
     return defaultValue
 #endif

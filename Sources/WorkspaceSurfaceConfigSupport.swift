@@ -1,6 +1,13 @@
 import Foundation
 import CoreText
 
+#if canImport(Bonsplit)
+import Bonsplit
+#else
+@inline(__always)
+private func dlog(_ msg: String) {}
+#endif
+
 func cmuxSurfaceContextName(_ context: ghostty_surface_context_e) -> String {
     switch context {
     case GHOSTTY_SURFACE_CONTEXT_WINDOW:
