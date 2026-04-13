@@ -2418,22 +2418,13 @@ final class Workspace: Identifiable, ObservableObject {
             return
         }
 
-        let fallbackPlan = WorkspaceBrowserPaneSupport.browserCloseFallbackPlan(
-            forPaneId: pane.id.uuidString,
-            in: bonsplitController.treeSnapshot()
-        )
-        let resolvedURL = browserPanel.currentURL
-            ?? browserPanel.preferredURLStringForOmnibar().flatMap(URL.init(string:))
-
-        pendingClosedBrowserRestoreSnapshots[tab.id] = ClosedBrowserPanelRestoreSnapshot(
+        pendingClosedBrowserRestoreSnapshots[tab.id] = WorkspaceBrowserPaneSupport.closedBrowserRestoreSnapshot(
             workspaceId: id,
-            url: resolvedURL,
-            profileID: browserPanel.profileID,
+            browserPanel: browserPanel,
             originalPaneId: pane.id,
             originalTabIndex: tabIndex,
-            fallbackSplitOrientation: fallbackPlan?.orientation,
-            fallbackSplitInsertFirst: fallbackPlan?.insertFirst ?? false,
-            fallbackAnchorPaneId: fallbackPlan?.anchorPaneId
+            treeSnapshot: bonsplitController.treeSnapshot(),
+            paneId: pane
         )
     }
 

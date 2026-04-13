@@ -46,6 +46,33 @@ enum WorkspaceBrowserPaneSupport {
         }
     }
 
+    static func closedBrowserRestoreSnapshot(
+        workspaceId: UUID,
+        browserPanel: BrowserPanel,
+        originalPaneId: UUID,
+        originalTabIndex: Int,
+        treeSnapshot: ExternalTreeNode,
+        paneId: PaneID
+    ) -> ClosedBrowserPanelRestoreSnapshot {
+        let fallbackPlan = browserCloseFallbackPlan(
+            forPaneId: paneId.id.uuidString,
+            in: treeSnapshot
+        )
+        let resolvedURL = browserPanel.currentURL
+            ?? browserPanel.preferredURLStringForOmnibar().flatMap(URL.init(string:))
+
+        return ClosedBrowserPanelRestoreSnapshot(
+            workspaceId: workspaceId,
+            url: resolvedURL,
+            profileID: browserPanel.profileID,
+            originalPaneId: originalPaneId,
+            originalTabIndex: originalTabIndex,
+            fallbackSplitOrientation: fallbackPlan?.orientation,
+            fallbackSplitInsertFirst: fallbackPlan?.insertFirst ?? false,
+            fallbackAnchorPaneId: fallbackPlan?.anchorPaneId
+        )
+    }
+
     struct BrowserPaneBreadcrumb {
         let split: ExternalSplitNode
         let branch: BrowserPaneBranch
