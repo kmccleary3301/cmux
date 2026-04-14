@@ -91,7 +91,7 @@
 		C7000024A1B2C3D4E5F60719 /* WorkspaceSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001024A1B2C3D4E5F60719 /* WorkspaceSettings.swift */; };
 		C7000025A1B2C3D4E5F60719 /* WorkspaceSidebarRuntimeModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001025A1B2C3D4E5F60719 /* WorkspaceSidebarRuntimeModels.swift */; };
 		C7000026A1B2C3D4E5F60719 /* WorkspaceSurfaceConfigSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001026A1B2C3D4E5F60719 /* WorkspaceSurfaceConfigSupport.swift */; };
-		C7000038A1B2C3D4E5F60719 /* WorkspaceSplitSurfaceSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001027A1B2C3D4E5F60719 /* WorkspaceSplitSurfaceSupport.swift */; };
+		C7000038A1B2C3D4E5F60719 /* WorkspaceSplitSurfaceSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001038A1B2C3D4E5F60719 /* WorkspaceSplitSurfaceSupport.swift */; };
 		C7000035A1B2C3D4E5F60719 /* WorkspaceBrowserPaneSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001035A1B2C3D4E5F60719 /* WorkspaceBrowserPaneSupport.swift */; };
 		C7000036A1B2C3D4E5F60719 /* WorkspaceRemoteStatusSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001036A1B2C3D4E5F60719 /* WorkspaceRemoteStatusSupport.swift */; };
 		C7000037A1B2C3D4E5F60719 /* WorkspaceRemoteConnectionSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001037A1B2C3D4E5F60719 /* WorkspaceRemoteConnectionSupport.swift */; };
@@ -295,7 +295,7 @@
 		C7001024A1B2C3D4E5F60719 /* WorkspaceSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceSettings.swift; sourceTree = "<group>"; };
 		C7001025A1B2C3D4E5F60719 /* WorkspaceSidebarRuntimeModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceSidebarRuntimeModels.swift; sourceTree = "<group>"; };
 		C7001026A1B2C3D4E5F60719 /* WorkspaceSurfaceConfigSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceSurfaceConfigSupport.swift; sourceTree = "<group>"; };
-		C7001027A1B2C3D4E5F60719 /* WorkspaceSplitSurfaceSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceSplitSurfaceSupport.swift; sourceTree = "<group>"; };
+		C7001038A1B2C3D4E5F60719 /* WorkspaceSplitSurfaceSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceSplitSurfaceSupport.swift; sourceTree = "<group>"; };
 		C7001035A1B2C3D4E5F60719 /* WorkspaceBrowserPaneSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceBrowserPaneSupport.swift; sourceTree = "<group>"; };
 		C7001036A1B2C3D4E5F60719 /* WorkspaceRemoteStatusSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceRemoteStatusSupport.swift; sourceTree = "<group>"; };
 		C7001037A1B2C3D4E5F60719 /* WorkspaceRemoteConnectionSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceRemoteConnectionSupport.swift; sourceTree = "<group>"; };
@@ -550,7 +550,7 @@
 				C7001024A1B2C3D4E5F60719 /* WorkspaceSettings.swift */,
 				C7001025A1B2C3D4E5F60719 /* WorkspaceSidebarRuntimeModels.swift */,
 				C7001026A1B2C3D4E5F60719 /* WorkspaceSurfaceConfigSupport.swift */,
-				C7001027A1B2C3D4E5F60719 /* WorkspaceSplitSurfaceSupport.swift */,
+				C7001038A1B2C3D4E5F60719 /* WorkspaceSplitSurfaceSupport.swift */,
 				C7001035A1B2C3D4E5F60719 /* WorkspaceBrowserPaneSupport.swift */,
 				C7001036A1B2C3D4E5F60719 /* WorkspaceRemoteStatusSupport.swift */,
 				C7001037A1B2C3D4E5F60719 /* WorkspaceRemoteConnectionSupport.swift */,
