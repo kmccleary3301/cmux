@@ -5,6 +5,15 @@ import Bonsplit
 import Combine
 
 extension Workspace {
+    static let remoteErrorStatusKey = "remote.error"
+    static let remotePortConflictStatusKey = "remote.port_conflicts"
+    static let remoteHeartbeatDateFormatter: ISO8601DateFormatter = {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        return formatter
+    }()
+
     var isRemoteWorkspace: Bool {
         remoteConfiguration != nil
     }
@@ -165,6 +174,11 @@ extension Workspace {
         applyRemoteProxyEndpointUpdate(nil)
         applyBrowserRemoteWorkspaceStatusToPanels()
         recomputeListeningPorts()
+    }
+
+    func clearRemoteConfigurationIfWorkspaceBecameLocal() {
+        guard panels.isEmpty, remoteConfiguration != nil else { return }
+        disconnectRemoteConnection(clearConfiguration: true)
     }
 
     private func seedInitialRemoteTerminalSessionIfNeeded(configuration: WorkspaceRemoteConfiguration) {

@@ -112,13 +112,6 @@ final class Workspace: Identifiable, ObservableObject {
     var remoteLastPortConflictFingerprint: String?
     var activeRemoteTerminalSurfaceIds: Set<UUID> = []
 
-    static let remoteErrorStatusKey = "remote.error"
-    static let remotePortConflictStatusKey = "remote.port_conflicts"
-    static let remoteHeartbeatDateFormatter: ISO8601DateFormatter = {
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-        return formatter
-    }()
     private var panelShellActivityStates: [UUID: PanelShellActivityState] = [:]
     /// PIDs associated with agent status entries (e.g. claude_code), keyed by status key.
     /// Used for stale-session detection: if the PID is dead, the status entry is cleared.
@@ -1222,11 +1215,6 @@ final class Workspace: Identifiable, ObservableObject {
             if lhs.timestamp != rhs.timestamp { return lhs.timestamp > rhs.timestamp }
             return lhs.key < rhs.key
         }
-    }
-
-    private func clearRemoteConfigurationIfWorkspaceBecameLocal() {
-        guard panels.isEmpty, remoteConfiguration != nil else { return }
-        disconnectRemoteConnection(clearConfiguration: true)
     }
 
     // MARK: - Panel Operations
