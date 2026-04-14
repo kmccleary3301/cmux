@@ -359,7 +359,7 @@ extension Workspace: @preconcurrency BonsplitDelegate {
         }
     }
 
-    private func beginNonFocusSplitFocusReassert(
+    func beginNonFocusSplitFocusReassert(
         preferredPanelId: UUID,
         splitPanelId: UUID
     ) -> UInt64 {
@@ -373,7 +373,7 @@ extension Workspace: @preconcurrency BonsplitDelegate {
         return generation
     }
 
-    private func matchesPendingNonFocusSplitFocusReassert(
+    func matchesPendingNonFocusSplitFocusReassert(
         generation: UInt64,
         preferredPanelId: UUID,
         splitPanelId: UUID
@@ -384,13 +384,13 @@ extension Workspace: @preconcurrency BonsplitDelegate {
             pending.splitPanelId == splitPanelId
     }
 
-    private func clearNonFocusSplitFocusReassert(generation: UInt64? = nil) {
+    func clearNonFocusSplitFocusReassert(generation: UInt64? = nil) {
         guard let pending = pendingNonFocusSplitFocusReassert else { return }
         if let generation, pending.generation != generation { return }
         pendingNonFocusSplitFocusReassert = nil
     }
 
-    private func shouldTreatCurrentEventAsExplicitFocusIntent() -> Bool {
+    func shouldTreatCurrentEventAsExplicitFocusIntent() -> Bool {
         guard let eventType = NSApp.currentEvent?.type else { return false }
         switch eventType {
         case .leftMouseDown, .leftMouseUp, .rightMouseDown, .rightMouseUp,
@@ -402,7 +402,7 @@ extension Workspace: @preconcurrency BonsplitDelegate {
         }
     }
 
-    private func markExplicitFocusIntent(on panelId: UUID) {
+    func markExplicitFocusIntent(on panelId: UUID) {
         guard let pending = pendingNonFocusSplitFocusReassert,
               pending.splitPanelId == panelId else {
             return
