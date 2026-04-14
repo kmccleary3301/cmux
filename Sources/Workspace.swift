@@ -1566,15 +1566,6 @@ final class Workspace: Identifiable, ObservableObject {
         return newPanel
     }
 
-    private func remoteTerminalStartupCommand() -> String? {
-        guard let command = remoteConfiguration?.terminalStartupCommand?
-            .trimmingCharacters(in: .whitespacesAndNewlines),
-              !command.isEmpty else {
-            return nil
-        }
-        return command
-    }
-
     /// Create a new browser panel split
     @discardableResult
     func newBrowserSplit(

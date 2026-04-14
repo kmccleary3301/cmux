@@ -24,6 +24,15 @@ extension Workspace {
         return entry.lowercased().contains("remote proxy unavailable")
     }
 
+    func remoteTerminalStartupCommand() -> String? {
+        guard let command = remoteConfiguration?.terminalStartupCommand?
+            .trimmingCharacters(in: .whitespacesAndNewlines),
+              !command.isEmpty else {
+            return nil
+        }
+        return command
+    }
+
     func browserRemoteWorkspaceStatusSnapshot() -> BrowserRemoteWorkspaceStatus? {
         guard let target = remoteDisplayTarget else { return nil }
         return BrowserRemoteWorkspaceStatus(
