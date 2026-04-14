@@ -390,8 +390,8 @@ final class Workspace: Identifiable, ObservableObject {
     private var focusReconcileScheduled = false
 #if DEBUG
     private(set) var debugFocusReconcileScheduledDuringDetachCount: Int = 0
-    private var debugLastDidMoveTabTimestamp: TimeInterval = 0
-    private var debugDidMoveTabEventCount: UInt64 = 0
+    var debugLastDidMoveTabTimestamp: TimeInterval = 0
+    var debugDidMoveTabEventCount: UInt64 = 0
 #endif
     private var layoutFollowUpObservers: [NSObjectProtocol] = []
     private var layoutFollowUpPanelsCancellable: AnyCancellable?
@@ -429,10 +429,10 @@ final class Workspace: Identifiable, ObservableObject {
         let manuallyUnread: Bool
     }
 
-    private var detachingTabIds: Set<TabID> = []
-    private var pendingDetachedSurfaces: [TabID: DetachedSurfaceTransfer] = [:]
+    var detachingTabIds: Set<TabID> = []
+    var pendingDetachedSurfaces: [TabID: DetachedSurfaceTransfer] = [:]
     private var activeDetachCloseTransactions: Int = 0
-    private var isDetachingCloseTransaction: Bool { activeDetachCloseTransactions > 0 }
+    var isDetachingCloseTransaction: Bool { activeDetachCloseTransactions > 0 }
 
 #if DEBUG
     private func debugElapsedMs(since start: TimeInterval) -> String {
@@ -561,7 +561,7 @@ final class Workspace: Identifiable, ObservableObject {
         panels[panelId] as? MarkdownPanel
     }
 
-    private func surfaceKind(for panel: any Panel) -> String {
+    func surfaceKind(for panel: any Panel) -> String {
         switch panel.panelType {
         case .terminal:
             return SurfaceKind.terminal
@@ -572,7 +572,7 @@ final class Workspace: Identifiable, ObservableObject {
         }
     }
 
-    private func resolvedPanelTitle(panelId: UUID, fallback: String) -> String {
+    func resolvedPanelTitle(panelId: UUID, fallback: String) -> String {
         let trimmedFallback = fallback.trimmingCharacters(in: .whitespacesAndNewlines)
         let fallbackTitle = trimmedFallback.isEmpty ? "Tab" : trimmedFallback
         if let custom = panelCustomTitles[panelId]?.trimmingCharacters(in: .whitespacesAndNewlines),
@@ -2707,7 +2707,7 @@ final class Workspace: Identifiable, ObservableObject {
         return false
     }
 
-    private func scheduleMovedTerminalRefresh(panelId: UUID) {
+    func scheduleMovedTerminalRefresh(panelId: UUID) {
         guard terminalPanel(for: panelId) != nil else { return }
 
         // Force an NSViewRepresentable update after drag/move reparenting. This keeps

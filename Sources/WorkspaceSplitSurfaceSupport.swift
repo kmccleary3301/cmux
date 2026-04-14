@@ -124,7 +124,7 @@ extension Workspace {
         ).first
     }
 
-    private func inheritedTerminalConfig(
+    func inheritedTerminalConfig(
         preferredPanelId: UUID? = nil,
         inPane preferredPaneId: PaneID? = nil
     ) -> ghostty_surface_config_s? {
