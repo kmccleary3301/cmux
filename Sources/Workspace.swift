@@ -103,7 +103,7 @@ final class Workspace: Identifiable, ObservableObject {
     @Published var remoteHeartbeatCount: Int = 0
     @Published var remoteLastHeartbeatAt: Date?
     @Published var listeningPorts: [Int] = []
-    @Published private(set) var activeRemoteTerminalSessionCount: Int = 0
+    @Published var activeRemoteTerminalSessionCount: Int = 0
     var surfaceTTYNames: [UUID: String] = [:]
     var remoteSessionController: WorkspaceRemoteSessionController?
     var activeRemoteSessionControllerID: UUID?
