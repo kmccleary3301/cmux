@@ -1,11 +1,14 @@
 import Foundation
 import Darwin
 
-#if canImport(Bonsplit)
-import Bonsplit
+#if DEBUG
+@inline(__always)
+private func workspaceRemoteSessionDlog(_ msg: String) {
+    print(msg)
+}
 #else
 @inline(__always)
-private func dlog(_ msg: String) {}
+private func workspaceRemoteSessionDlog(_ msg: String) {}
 #endif
 
 /// Owns the remote-session lifecycle for a workspace without forcing
@@ -848,7 +851,7 @@ final class WorkspaceRemoteSessionController {
 
     private func debugLog(_ message: @autoclosure () -> String) {
 #if DEBUG
-        dlog(message())
+        workspaceRemoteSessionDlog(message())
 #endif
     }
 
