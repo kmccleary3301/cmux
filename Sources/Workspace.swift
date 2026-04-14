@@ -105,12 +105,7 @@ final class Workspace: Identifiable, ObservableObject {
     @Published var listeningPorts: [Int] = []
     @Published var activeRemoteTerminalSessionCount: Int = 0
     var surfaceTTYNames: [UUID: String] = [:]
-    var remoteSessionController: WorkspaceRemoteSessionController?
-    var activeRemoteSessionControllerID: UUID?
-    var remoteLastErrorFingerprint: String?
-    var remoteLastDaemonErrorFingerprint: String?
-    var remoteLastPortConflictFingerprint: String?
-    var activeRemoteTerminalSurfaceIds: Set<UUID> = []
+    var remoteConnectionRuntime = WorkspaceRemoteConnectionRuntimeState()
 
     private var panelShellActivityStates: [UUID: PanelShellActivityState] = [:]
     /// PIDs associated with agent status entries (e.g. claude_code), keyed by status key.

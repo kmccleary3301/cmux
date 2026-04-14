@@ -4,6 +4,15 @@ import AppKit
 import Bonsplit
 import Combine
 
+final class WorkspaceRemoteConnectionRuntimeState {
+    var remoteSessionController: WorkspaceRemoteSessionController?
+    var activeRemoteSessionControllerID: UUID?
+    var remoteLastErrorFingerprint: String?
+    var remoteLastDaemonErrorFingerprint: String?
+    var remoteLastPortConflictFingerprint: String?
+    var activeRemoteTerminalSurfaceIds: Set<UUID> = []
+}
+
 extension Workspace {
     static let remoteErrorStatusKey = "remote.error"
     static let remotePortConflictStatusKey = "remote.port_conflicts"
@@ -24,6 +33,36 @@ extension Workspace {
 
     var hasActiveRemoteTerminalSessions: Bool {
         activeRemoteTerminalSessionCount > 0
+    }
+
+    var remoteSessionController: WorkspaceRemoteSessionController? {
+        get { remoteConnectionRuntime.remoteSessionController }
+        set { remoteConnectionRuntime.remoteSessionController = newValue }
+    }
+
+    var activeRemoteSessionControllerID: UUID? {
+        get { remoteConnectionRuntime.activeRemoteSessionControllerID }
+        set { remoteConnectionRuntime.activeRemoteSessionControllerID = newValue }
+    }
+
+    var remoteLastErrorFingerprint: String? {
+        get { remoteConnectionRuntime.remoteLastErrorFingerprint }
+        set { remoteConnectionRuntime.remoteLastErrorFingerprint = newValue }
+    }
+
+    var remoteLastDaemonErrorFingerprint: String? {
+        get { remoteConnectionRuntime.remoteLastDaemonErrorFingerprint }
+        set { remoteConnectionRuntime.remoteLastDaemonErrorFingerprint = newValue }
+    }
+
+    var remoteLastPortConflictFingerprint: String? {
+        get { remoteConnectionRuntime.remoteLastPortConflictFingerprint }
+        set { remoteConnectionRuntime.remoteLastPortConflictFingerprint = newValue }
+    }
+
+    var activeRemoteTerminalSurfaceIds: Set<UUID> {
+        get { remoteConnectionRuntime.activeRemoteTerminalSurfaceIds }
+        set { remoteConnectionRuntime.activeRemoteTerminalSurfaceIds = newValue }
     }
 
     func remoteStatusPayload() -> [String: Any] {
