@@ -338,8 +338,8 @@ final class Workspace: Identifiable, ObservableObject {
     }
 
     deinit {
-        activeRemoteSessionControllerID = nil
-        remoteSessionController?.stop()
+        // Remote-session teardown is owned by explicit disconnect/shutdown
+        // paths so deinit does not have to touch main-actor isolated state.
     }
 
     func refreshSplitButtonTooltips() {
