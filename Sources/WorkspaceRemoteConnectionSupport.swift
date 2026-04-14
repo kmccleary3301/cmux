@@ -4,6 +4,7 @@ import AppKit
 import Bonsplit
 import Combine
 
+@MainActor
 final class WorkspaceRemoteConnectionRuntimeState {
     var remoteSessionController: WorkspaceRemoteSessionController?
     var activeRemoteSessionControllerID: UUID?
