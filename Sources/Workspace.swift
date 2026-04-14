@@ -1589,6 +1589,12 @@ final class Workspace: Identifiable, ObservableObject {
 
         guard let paneId = sourcePaneId else { return nil }
 
+        let browserRemoteContext = WorkspaceBrowserPaneSupport.browserRemoteContext(
+            workspaceId: id,
+            proxyEndpoint: remoteProxyEndpoint,
+            isRemoteWorkspace: isRemoteWorkspace
+        )
+
         // Create browser panel
         let browserPanel = BrowserPanel(
             workspaceId: id,
@@ -1597,9 +1603,9 @@ final class Workspace: Identifiable, ObservableObject {
                 sourcePanelId: panelId
             ),
             initialURL: url,
-            proxyEndpoint: remoteProxyEndpoint,
-            isRemoteWorkspace: isRemoteWorkspace,
-            remoteWebsiteDataStoreIdentifier: isRemoteWorkspace ? id : nil
+            proxyEndpoint: browserRemoteContext.proxyEndpoint,
+            isRemoteWorkspace: browserRemoteContext.isRemoteWorkspace,
+            remoteWebsiteDataStoreIdentifier: browserRemoteContext.remoteWebsiteDataStoreIdentifier
         )
         panels[browserPanel.id] = browserPanel
         panelTitles[browserPanel.id] = browserPanel.displayTitle
@@ -1668,6 +1674,12 @@ final class Workspace: Identifiable, ObservableObject {
         let previousFocusedPanelId = focusedPanelId
         let previousHostedView = focusedTerminalPanel?.hostedView
 
+        let browserRemoteContext = WorkspaceBrowserPaneSupport.browserRemoteContext(
+            workspaceId: id,
+            proxyEndpoint: remoteProxyEndpoint,
+            isRemoteWorkspace: isRemoteWorkspace
+        )
+
         let browserPanel = BrowserPanel(
             workspaceId: id,
             profileID: resolvedNewBrowserProfileID(
@@ -1676,9 +1688,9 @@ final class Workspace: Identifiable, ObservableObject {
             ),
             initialURL: url,
             bypassInsecureHTTPHostOnce: bypassInsecureHTTPHostOnce,
-            proxyEndpoint: remoteProxyEndpoint,
-            isRemoteWorkspace: isRemoteWorkspace,
-            remoteWebsiteDataStoreIdentifier: isRemoteWorkspace ? id : nil
+            proxyEndpoint: browserRemoteContext.proxyEndpoint,
+            isRemoteWorkspace: browserRemoteContext.isRemoteWorkspace,
+            remoteWebsiteDataStoreIdentifier: browserRemoteContext.remoteWebsiteDataStoreIdentifier
         )
         panels[browserPanel.id] = browserPanel
         panelTitles[browserPanel.id] = browserPanel.displayTitle

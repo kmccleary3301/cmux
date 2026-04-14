@@ -3,10 +3,28 @@ import AppKit
 import Bonsplit
 
 enum WorkspaceBrowserPaneSupport {
+    struct BrowserRemoteContext {
+        let proxyEndpoint: BrowserProxyEndpoint?
+        let isRemoteWorkspace: Bool
+        let remoteWebsiteDataStoreIdentifier: UUID?
+    }
+
     struct BrowserCloseFallbackPlan {
         let orientation: SplitOrientation
         let insertFirst: Bool
         let anchorPaneId: UUID?
+    }
+
+    static func browserRemoteContext(
+        workspaceId: UUID,
+        proxyEndpoint: BrowserProxyEndpoint?,
+        isRemoteWorkspace: Bool
+    ) -> BrowserRemoteContext {
+        BrowserRemoteContext(
+            proxyEndpoint: proxyEndpoint,
+            isRemoteWorkspace: isRemoteWorkspace,
+            remoteWebsiteDataStoreIdentifier: isRemoteWorkspace ? workspaceId : nil
+        )
     }
 
     static func browserCloseFallbackPlan(
