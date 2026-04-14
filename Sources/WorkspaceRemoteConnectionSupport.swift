@@ -179,12 +179,12 @@ extension Workspace {
         trackRemoteTerminalSurface(initialPanelId)
     }
 
-    private func trackRemoteTerminalSurface(_ panelId: UUID) {
+    func trackRemoteTerminalSurface(_ panelId: UUID) {
         guard activeRemoteTerminalSurfaceIds.insert(panelId).inserted else { return }
         activeRemoteTerminalSessionCount = activeRemoteTerminalSurfaceIds.count
     }
 
-    private func untrackRemoteTerminalSurface(_ panelId: UUID) {
+    func untrackRemoteTerminalSurface(_ panelId: UUID) {
         guard activeRemoteTerminalSurfaceIds.remove(panelId) != nil else { return }
         activeRemoteTerminalSessionCount = activeRemoteTerminalSurfaceIds.count
         maybeDemoteRemoteWorkspaceAfterSSHSessionEnded()
