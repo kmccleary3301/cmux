@@ -91,7 +91,7 @@
 		C7000024A1B2C3D4E5F60719 /* WorkspaceSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001024A1B2C3D4E5F60719 /* WorkspaceSettings.swift */; };
 		C7000025A1B2C3D4E5F60719 /* WorkspaceSidebarRuntimeModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001025A1B2C3D4E5F60719 /* WorkspaceSidebarRuntimeModels.swift */; };
 		C7000026A1B2C3D4E5F60719 /* WorkspaceSurfaceConfigSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001026A1B2C3D4E5F60719 /* WorkspaceSurfaceConfigSupport.swift */; };
-		C7000027A1B2C3D4E5F60719 /* WorkspaceSplitSurfaceSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001027A1B2C3D4E5F60719 /* WorkspaceSplitSurfaceSupport.swift */; };
+		C7000038A1B2C3D4E5F60719 /* WorkspaceSplitSurfaceSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001027A1B2C3D4E5F60719 /* WorkspaceSplitSurfaceSupport.swift */; };
 		C7000035A1B2C3D4E5F60719 /* WorkspaceBrowserPaneSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001035A1B2C3D4E5F60719 /* WorkspaceBrowserPaneSupport.swift */; };
 		C7000036A1B2C3D4E5F60719 /* WorkspaceRemoteStatusSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001036A1B2C3D4E5F60719 /* WorkspaceRemoteStatusSupport.swift */; };
 		C7000037A1B2C3D4E5F60719 /* WorkspaceRemoteConnectionSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7001037A1B2C3D4E5F60719 /* WorkspaceRemoteConnectionSupport.swift */; };
@@ -880,7 +880,7 @@
 				C7000024A1B2C3D4E5F60719 /* WorkspaceSettings.swift in Sources */,
 				C7000025A1B2C3D4E5F60719 /* WorkspaceSidebarRuntimeModels.swift in Sources */,
 				C7000026A1B2C3D4E5F60719 /* WorkspaceSurfaceConfigSupport.swift in Sources */,
-				C7000027A1B2C3D4E5F60719 /* WorkspaceSplitSurfaceSupport.swift in Sources */,
+				C7000038A1B2C3D4E5F60719 /* WorkspaceSplitSurfaceSupport.swift in Sources */,
 				C7000035A1B2C3D4E5F60719 /* WorkspaceBrowserPaneSupport.swift in Sources */,
 				C7000036A1B2C3D4E5F60719 /* WorkspaceRemoteStatusSupport.swift in Sources */,
 				C7000037A1B2C3D4E5F60719 /* WorkspaceRemoteConnectionSupport.swift in Sources */,
