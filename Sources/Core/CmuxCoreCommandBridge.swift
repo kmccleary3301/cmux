@@ -93,7 +93,7 @@ extension TabManager {
     }
 }
 
-extension TabManager: CmuxCoreCommandHandler {
+extension TabManager: @preconcurrency CmuxCoreCommandHandler {
     func handle(_ command: CmuxCoreCommand) {
         _ = apply(coreCommand: command)
     }
