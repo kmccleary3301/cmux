@@ -1,6 +1,13 @@
 import Foundation
 import Darwin
 
+#if canImport(Bonsplit)
+import Bonsplit
+#else
+@inline(__always)
+private func dlog(_ msg: String) {}
+#endif
+
 /// Owns the remote-session lifecycle for a workspace without forcing
 /// the rest of Workspace.swift to carry the transport/runtime stack.
 final class WorkspaceRemoteSessionController {
