@@ -400,7 +400,7 @@ final class WorkspaceRemoteSessionController {
 
     private func publishState(_ state: WorkspaceRemoteConnectionState, detail: String?) {
         let controllerID = self.controllerID
-        DispatchQueue.main.async { [weak workspace] in
+        Task { @MainActor [weak workspace] in
             guard let workspace else { return }
             guard workspace.activeRemoteSessionControllerID == controllerID else { return }
             workspace.applyRemoteConnectionStateUpdate(
@@ -428,7 +428,7 @@ final class WorkspaceRemoteSessionController {
             capabilities: capabilities,
             remotePath: remotePath
         )
-        DispatchQueue.main.async { [weak workspace] in
+        Task { @MainActor [weak workspace] in
             guard let workspace else { return }
             guard workspace.activeRemoteSessionControllerID == controllerID else { return }
             workspace.applyRemoteDaemonStatusUpdate(
@@ -440,7 +440,7 @@ final class WorkspaceRemoteSessionController {
 
     private func publishProxyEndpoint(_ endpoint: BrowserProxyEndpoint?) {
         let controllerID = self.controllerID
-        DispatchQueue.main.async { [weak workspace] in
+        Task { @MainActor [weak workspace] in
             guard let workspace else { return }
             guard workspace.activeRemoteSessionControllerID == controllerID else { return }
             workspace.applyRemoteProxyEndpointUpdate(endpoint)
@@ -449,7 +449,7 @@ final class WorkspaceRemoteSessionController {
 
     private func publishPortsSnapshotLocked() {
         let controllerID = self.controllerID
-        DispatchQueue.main.async { [weak workspace] in
+        Task { @MainActor [weak workspace] in
             guard let workspace else { return }
             guard workspace.activeRemoteSessionControllerID == controllerID else { return }
             workspace.applyRemotePortsSnapshot(
@@ -468,7 +468,7 @@ final class WorkspaceRemoteSessionController {
 
     private func publishHeartbeat(count: Int, at date: Date?) {
         let controllerID = self.controllerID
-        DispatchQueue.main.async { [weak workspace] in
+        Task { @MainActor [weak workspace] in
             guard let workspace else { return }
             guard workspace.activeRemoteSessionControllerID == controllerID else { return }
             workspace.applyRemoteHeartbeatUpdate(count: count, lastSeenAt: date)
