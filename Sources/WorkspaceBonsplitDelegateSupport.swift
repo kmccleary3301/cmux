@@ -52,7 +52,7 @@ extension Workspace: @preconcurrency BonsplitDelegate {
 
     /// Apply the side-effects of selecting a tab (unfocus others, focus this panel, update state).
     /// bonsplit doesn't always emit didSelectTab for programmatic selection paths (e.g. createTab).
-    private func applyTabSelection(
+    func applyTabSelection(
         tabId: TabID,
         inPane pane: PaneID,
         reassertAppKitFocus: Bool = true,

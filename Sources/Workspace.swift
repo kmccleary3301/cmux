@@ -21,23 +21,23 @@ final class Workspace: Identifiable, ObservableObject {
     let bonsplitController: BonsplitController
 
     /// Mapping from bonsplit TabID to our Panel instances
-    @Published private(set) var panels: [UUID: any Panel] = [:]
+    @Published var panels: [UUID: any Panel] = [:]
 
     /// Subscriptions for panel updates (e.g., browser title changes)
     private var panelSubscriptions: [UUID: AnyCancellable] = [:]
 
     /// When true, suppresses auto-creation in didSplitPane (programmatic splits handle their own panels)
-    private var isProgrammaticSplit = false
+    var isProgrammaticSplit = false
     private var debugStressPreloadSelectionDepth = 0
 
     /// Last terminal panel used as an inheritance source (typically last focused terminal).
-    private var lastTerminalConfigInheritancePanelId: UUID?
+    var lastTerminalConfigInheritancePanelId: UUID?
     /// Last known terminal font points from inheritance sources. Used as fallback when
     /// no live terminal surface is currently available.
-    private var lastTerminalConfigInheritanceFontPoints: Float?
+    var lastTerminalConfigInheritanceFontPoints: Float?
     /// Per-panel inherited zoom lineage. Descendants reuse this root value unless
     /// a panel is explicitly re-zoomed by the user.
-    private var terminalInheritanceFontPointsByPanelId: [UUID: Float] = [:]
+    var terminalInheritanceFontPointsByPanelId: [UUID: Float] = [:]
 
     /// Callback used by TabManager to capture recently closed browser panels for Cmd+Shift+T restore.
     var onClosedBrowserPanel: ((ClosedBrowserPanelRestoreSnapshot) -> Void)?
@@ -121,7 +121,7 @@ final class Workspace: Identifiable, ObservableObject {
 
     var processTitle: String
 
-    private enum SurfaceKind {
+    enum SurfaceKind {
         static let terminal = "terminal"
         static let browser = "browser"
         static let markdown = "markdown"
@@ -454,7 +454,7 @@ final class Workspace: Identifiable, ObservableObject {
     }
 
 
-    private func installBrowserPanelSubscription(_ browserPanel: BrowserPanel) {
+    func installBrowserPanelSubscription(_ browserPanel: BrowserPanel) {
         let subscription = Publishers.CombineLatest3(
             browserPanel.$pageTitle.removeDuplicates(),
             browserPanel.$isLoading.removeDuplicates(),
@@ -498,7 +498,7 @@ final class Workspace: Identifiable, ObservableObject {
         preferredBrowserProfileID = profileID
     }
 
-    private func resolvedNewBrowserProfileID(
+    func resolvedNewBrowserProfileID(
         preferredProfileID: UUID? = nil,
         sourcePanelId: UUID? = nil
     ) -> UUID {
@@ -1717,7 +1717,7 @@ final class Workspace: Identifiable, ObservableObject {
     }
     // MARK: - Focus Management
 
-    private func preserveFocusAfterNonFocusSplit(
+    func preserveFocusAfterNonFocusSplit(
         preferredPanelId: UUID?,
         splitPanelId: UUID,
         previousHostedView: GhosttySurfaceScrollView?
