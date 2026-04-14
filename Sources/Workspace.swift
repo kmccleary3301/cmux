@@ -377,15 +377,15 @@ final class Workspace: Identifiable, ObservableObject {
     /// Bonsplit pane-close does not emit per-tab didClose callbacks.
     private var pendingPaneClosePanelIds: [UUID: [UUID]] = [:]
     private var pendingClosedBrowserRestoreSnapshots: [TabID: ClosedBrowserPanelRestoreSnapshot] = [:]
-    private var isApplyingTabSelection = false
-    private struct PendingTabSelectionRequest {
+    var isApplyingTabSelection = false
+    struct PendingTabSelectionRequest {
         let tabId: TabID
         let pane: PaneID
         let reassertAppKitFocus: Bool
         let focusIntent: PanelFocusIntent?
         let previousTerminalHostedView: GhosttySurfaceScrollView?
     }
-    private var pendingTabSelection: PendingTabSelectionRequest?
+    var pendingTabSelection: PendingTabSelectionRequest?
     private var isReconcilingFocusState = false
     private var focusReconcileScheduled = false
 #if DEBUG

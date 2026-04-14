@@ -52,7 +52,7 @@ extension Workspace: @preconcurrency BonsplitDelegate {
 
     /// Apply the side-effects of selecting a tab (unfocus others, focus this panel, update state).
     /// bonsplit doesn't always emit didSelectTab for programmatic selection paths (e.g. createTab).
-    func applyTabSelection(
+    private func applyBonsplitTabSelection(
         tabId: TabID,
         inPane pane: PaneID,
         reassertAppKitFocus: Bool = true,
@@ -1003,6 +1003,24 @@ extension Workspace: @preconcurrency BonsplitDelegate {
     }
 
     // No post-close polling refresh loop: we rely on view invariants and Ghostty's wakeups.
+}
+
+extension Workspace {
+    func applyTabSelection(
+        tabId: TabID,
+        inPane pane: PaneID,
+        reassertAppKitFocus: Bool = true,
+        focusIntent: PanelFocusIntent? = nil,
+        previousTerminalHostedView: GhosttySurfaceScrollView? = nil
+    ) {
+        applyBonsplitTabSelection(
+            tabId: tabId,
+            inPane: pane,
+            reassertAppKitFocus: reassertAppKitFocus,
+            focusIntent: focusIntent,
+            previousTerminalHostedView: previousTerminalHostedView
+        )
+    }
 }
 
 
