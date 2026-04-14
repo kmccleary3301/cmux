@@ -56,6 +56,14 @@ final class WorkspaceRemoteSessionController {
         queue.setSpecific(key: queueKey, value: ())
     }
 
+    deinit {
+        if DispatchQueue.getSpecific(key: queueKey) != nil {
+            shutdownForDeinitLocked()
+        } else {
+            queue.sync { shutdownForDeinitLocked() }
+        }
+    }
+
     func start() {
         debugLog("remote.session.start \(debugConfigSummary())")
         queue.async { [weak self] in
@@ -93,6 +101,24 @@ final class WorkspaceRemoteSessionController {
         daemonRemotePath = nil
         publishProxyEndpoint(nil)
         publishPortsSnapshotLocked()
+    }
+
+    private func shutdownForDeinitLocked() {
+        isStopping = true
+        reconnectWorkItem?.cancel()
+        reconnectWorkItem = nil
+        reconnectRetryCount = 0
+        reverseRelayRestartWorkItem?.cancel()
+        reverseRelayRestartWorkItem = nil
+        stopReverseRelayLocked()
+        proxyLease?.release()
+        proxyLease = nil
+        proxyEndpoint = nil
+        daemonReady = false
+        daemonBootstrapVersion = nil
+        daemonRemotePath = nil
+        heartbeatCount = 0
+        connectionAttemptStartedAt = nil
     }
 
     private func beginConnectionAttemptLocked() {
