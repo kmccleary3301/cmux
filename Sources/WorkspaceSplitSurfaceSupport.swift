@@ -5,7 +5,7 @@ import Bonsplit
 import Combine
 
 extension Workspace {
-    private func seedTerminalInheritanceFontPoints(
+    func seedTerminalInheritanceFontPoints(
         panelId: UUID,
         configTemplate: ghostty_surface_config_s?
     ) {
@@ -34,7 +34,7 @@ extension Workspace {
         return runtimePoints
     }
 
-    private func rememberTerminalConfigInheritanceSource(_ terminalPanel: TerminalPanel) {
+    func rememberTerminalConfigInheritanceSource(_ terminalPanel: TerminalPanel) {
         lastTerminalConfigInheritancePanelId = terminalPanel.id
         if let sourceSurface = terminalPanel.surface.surface,
            let runtimePoints = cmuxCurrentSurfaceFontSizePoints(sourceSurface) {
