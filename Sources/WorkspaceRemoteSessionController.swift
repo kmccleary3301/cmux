@@ -400,8 +400,8 @@ final class WorkspaceRemoteSessionController {
 
     private func publishState(_ state: WorkspaceRemoteConnectionState, detail: String?) {
         let controllerID = self.controllerID
-        guard let workspace else { return }
         Task { @MainActor in
+            guard let workspace = self.workspace else { return }
             guard workspace.activeRemoteSessionControllerID == controllerID else { return }
             workspace.applyRemoteConnectionStateUpdate(
                 state,
@@ -428,8 +428,8 @@ final class WorkspaceRemoteSessionController {
             capabilities: capabilities,
             remotePath: remotePath
         )
-        guard let workspace else { return }
         Task { @MainActor in
+            guard let workspace = self.workspace else { return }
             guard workspace.activeRemoteSessionControllerID == controllerID else { return }
             workspace.applyRemoteDaemonStatusUpdate(
                 status,
@@ -440,8 +440,8 @@ final class WorkspaceRemoteSessionController {
 
     private func publishProxyEndpoint(_ endpoint: BrowserProxyEndpoint?) {
         let controllerID = self.controllerID
-        guard let workspace else { return }
         Task { @MainActor in
+            guard let workspace = self.workspace else { return }
             guard workspace.activeRemoteSessionControllerID == controllerID else { return }
             workspace.applyRemoteProxyEndpointUpdate(endpoint)
         }
@@ -449,8 +449,8 @@ final class WorkspaceRemoteSessionController {
 
     private func publishPortsSnapshotLocked() {
         let controllerID = self.controllerID
-        guard let workspace else { return }
         Task { @MainActor in
+            guard let workspace = self.workspace else { return }
             guard workspace.activeRemoteSessionControllerID == controllerID else { return }
             workspace.applyRemotePortsSnapshot(
                 detected: [],
@@ -468,8 +468,8 @@ final class WorkspaceRemoteSessionController {
 
     private func publishHeartbeat(count: Int, at date: Date?) {
         let controllerID = self.controllerID
-        guard let workspace else { return }
         Task { @MainActor in
+            guard let workspace = self.workspace else { return }
             guard workspace.activeRemoteSessionControllerID == controllerID else { return }
             workspace.applyRemoteHeartbeatUpdate(count: count, lastSeenAt: date)
         }
