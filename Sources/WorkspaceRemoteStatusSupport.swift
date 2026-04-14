@@ -43,6 +43,10 @@ extension Workspace {
         )
     }
 
+    func applyBrowserRemoteWorkspaceStatus(to browserPanel: BrowserPanel) {
+        browserPanel.setRemoteWorkspaceStatus(browserRemoteWorkspaceStatusSnapshot())
+    }
+
     func applyBrowserRemoteWorkspaceStatusToPanels() {
         let snapshot = browserRemoteWorkspaceStatusSnapshot()
         for panel in panels.values {

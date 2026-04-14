@@ -1651,7 +1651,7 @@ final class Workspace: Identifiable, ObservableObject {
         }
 
         installBrowserPanelSubscription(browserPanel)
-        browserPanel.setRemoteWorkspaceStatus(browserRemoteWorkspaceStatusSnapshot())
+        applyBrowserRemoteWorkspaceStatus(to: browserPanel)
 
         return browserPanel
     }
@@ -1733,7 +1733,7 @@ final class Workspace: Identifiable, ObservableObject {
         }
 
         installBrowserPanelSubscription(browserPanel)
-        browserPanel.setRemoteWorkspaceStatus(browserRemoteWorkspaceStatusSnapshot())
+        applyBrowserRemoteWorkspaceStatus(to: browserPanel)
 
         return browserPanel
     }
@@ -2157,6 +2157,7 @@ final class Workspace: Identifiable, ObservableObject {
                 proxyEndpoint: browserRemoteContext.proxyEndpoint,
                 remoteStatus: browserRemoteWorkspaceStatusSnapshot()
             )
+            applyBrowserRemoteWorkspaceStatus(to: browserPanel)
             installBrowserPanelSubscription(browserPanel)
         }
 
