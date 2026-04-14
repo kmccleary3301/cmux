@@ -446,7 +446,6 @@ extension Workspace {
 
         return browserPanel
     }
-}
 
     /// Create a new browser surface in the specified pane.
     /// - Parameter focus: nil = focus only if the target pane is already focused (default UI behavior),
