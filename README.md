@@ -70,6 +70,9 @@ Sidebar shows git branch, linked PR status/number, working directory, listening 
 - **Ghostty compatible** — Reads your existing `~/.config/ghostty/config` for themes, fonts, and colors
 - **GPU-accelerated** — Powered by libghostty for smooth rendering
 
+> [!NOTE]
+> This fork now also carries a developer-facing Windows parity lane built around embedded Ghostty, a real WebView2 browser host, a mixed terminal/browser shell host, and a formal SwiftPM slice boundary. The shipping end-user app is still macOS-first, but the Windows lane is real, packageable, and actively validated from this repo.
+
 ## Install
 
 ### DMG (recommended)
@@ -94,6 +97,82 @@ brew upgrade --cask cmux
 ```
 
 On first launch, macOS may ask you to confirm opening an app from an identified developer. Click **Open** to proceed.
+
+## Windows development lane
+
+This fork now carries a real Windows development lane in addition to the shipping macOS app.
+
+It is not presented as a polished public Windows release yet. It is the active parity program and includes the core systems needed to prove and harden a serious Windows-native `cmux` direction:
+
+- embedded Ghostty terminal hosting
+- a real WebView2-backed browser host
+- a mixed terminal/browser shell host
+- packageable and reproducible Windows validation
+- parity probes for focus, keyboard, DPI, accessibility, restore, and crash recovery
+
+### Main Windows source entry points
+
+The current Windows slice is centered on:
+
+- [`Sources/Windows/CmuxWindowsBootstrapMain.swift`](./Sources/Windows/CmuxWindowsBootstrapMain.swift)
+- [`Sources/Windows/CmuxWindowsGhosttyBridge.swift`](./Sources/Windows/CmuxWindowsGhosttyBridge.swift)
+- [`Sources/Windows/CmuxWindowsBrowserHost.swift`](./Sources/Windows/CmuxWindowsBrowserHost.swift)
+- [`Sources/Windows/CmuxWindowsShellHost.swift`](./Sources/Windows/CmuxWindowsShellHost.swift)
+- [`Sources/Windows/CmuxWindowsSmokeHarness.swift`](./Sources/Windows/CmuxWindowsSmokeHarness.swift)
+- [`WindowsSlicePackage`](./WindowsSlicePackage)
+
+The deeper parity probes live under [`scripts/`](./scripts), especially:
+
+- `test-windows-all.ps1`
+- `test-windows-slice.ps1`
+- `test-windows-north-star-spikes.ps1`
+- `test-windows-shell-host-*.ps1`
+- `windows-libghostty-embed-spike.c`
+- `windows-shell-host-spike.cpp`
+- `windows-webview2-browser-spike.cpp`
+- `windows-webview2-child-host.cpp`
+
+### Canonical Windows commands
+
+Build the Windows-safe slice:
+
+```powershell
+.\scripts\build-windows-slice.ps1
+```
+
+Build the formal SwiftPM boundary:
+
+```powershell
+.\scripts\build-windows-slice-package.ps1 -Sync
+```
+
+Run the repo-local Windows suite:
+
+```powershell
+.\scripts\test-windows-all.ps1
+```
+
+Run the parity/spike suite:
+
+```powershell
+.\scripts\test-windows-north-star-spikes.ps1
+```
+
+Package the Windows lane:
+
+```powershell
+.\scripts\package-windows-lane.ps1
+```
+
+Validate the packaged lane:
+
+```powershell
+.\dist\windows-lane\tools\run-windows-lane-ci.ps1 -InstallRoot (Resolve-Path .\dist\windows-lane).Path
+```
+
+### Current Windows caveat
+
+The Windows suites are best run serially. Build and artifact isolation is much better than it was, but broad parallel execution across the full slice, package, and parity families is still not the recommended default.
 
 ## Why cmux?
 
@@ -120,6 +199,12 @@ Give a million developers composable primitives and they'll collectively find th
 ## Documentation
 
 For more info on how to configure cmux, [head over to our docs](https://cmux.com/docs/getting-started?utm_source=readme).
+
+For Windows development in this fork, start with:
+
+- [`WindowsSlicePackage/README.md`](./WindowsSlicePackage/README.md)
+- [`scripts/`](./scripts)
+- [`PROJECTS.md`](./PROJECTS.md)
 
 ## Keyboard Shortcuts
 
