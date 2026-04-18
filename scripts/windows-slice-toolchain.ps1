@@ -33,7 +33,15 @@ function Initialize-CmuxWindowsSliceToolchain {
 
     $env:SDKROOT = $swiftSdkRoot
     $env:SWIFTFLAGS = '-sdk ' + $env:SDKROOT + ' -resource-dir ' + $env:SDKROOT + '\usr\lib\swift -I ' + $env:SDKROOT + '\usr\lib\swift -L ' + $env:SDKROOT + '\usr\lib\swift\windows'
-    $env:Path = "$msvcBin;$swiftToolchainBin;$swiftRuntimeBin;$env:Path"
+
+    $pathEntries = [System.Collections.Generic.List[string]]::new()
+    foreach ($candidate in @($msvcBin, $swiftToolchainBin, $swiftRuntimeBin) + ($env:Path -split ';')) {
+        if ([string]::IsNullOrWhiteSpace($candidate)) { continue }
+        $trimmed = $candidate.Trim()
+        if ($pathEntries.Contains($trimmed)) { continue }
+        [void]$pathEntries.Add($trimmed)
+    }
+    $env:Path = ($pathEntries -join ';')
     $env:CMUX_REPO_ROOT = $RepoRoot
 
     $ghosttyExe = Join-Path $RepoRoot '..\ghostty\zig-out\bin\ghostty.exe'

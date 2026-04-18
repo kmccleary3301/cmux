@@ -1,6 +1,6 @@
 param(
-    [string]$SmokeOutputPath = $(Join-Path $env:TEMP 'cmux-windows-notification-report.json'),
-    [string]$ArtifactDirectory = $(Join-Path $env:TEMP 'cmux-windows-notification-artifacts'),
+    [string]$SmokeOutputPath = $(Join-Path $env:TEMP ("cmux-windows-notification-report-" + [guid]::NewGuid().Guid + '.json')),
+    [string]$ArtifactDirectory = $(Join-Path $env:TEMP ("cmux-windows-notification-artifacts-" + [guid]::NewGuid().Guid)),
     [string]$SliceExecutablePath = ''
 )
 
@@ -9,7 +9,7 @@ $ErrorActionPreference = 'Stop'
 New-Item -ItemType Directory -Force -Path $ArtifactDirectory | Out-Null
 
 $sliceExecutable = if ([string]::IsNullOrWhiteSpace($SliceExecutablePath)) {
-    $builtPath = Join-Path $env:TEMP 'cmux_windows_notification.exe'
+    $builtPath = Join-Path $ArtifactDirectory 'cmux_windows_notification.exe'
     & (Join-Path $PSScriptRoot 'build-windows-slice.ps1') -OutputPath $builtPath | Out-Null
     $builtPath
 } else {

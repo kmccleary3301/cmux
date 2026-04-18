@@ -37,7 +37,28 @@ Invoke-CmuxWindowsSlicePackageLocked {
             New-Item -ItemType Directory -Force -Path $outputDirectory | Out-Null
         }
         Copy-Item -Path $builtExe -Destination $OutputPath -Force
+        $browserHelperPath = Join-Path $outputDirectory 'cmux_windows_webview2_spike.exe'
+        $browserChildHelperPath = Join-Path $outputDirectory 'cmux_windows_webview2_child_host.exe'
+        $shellHostHelperPath = Join-Path $outputDirectory 'cmux_windows_shell_host_spike.exe'
+        & (Join-Path $PSScriptRoot 'build-windows-webview2-spike.ps1') `
+            -OutputPath $browserHelperPath `
+            -SwiftRoot $SwiftRoot `
+            -SwiftVersion $SwiftVersion `
+            -MsvcVersion $MsvcVersion | Out-Null
+        & (Join-Path $PSScriptRoot 'build-windows-webview2-child-host.ps1') `
+            -OutputPath $browserChildHelperPath `
+            -SwiftRoot $SwiftRoot `
+            -SwiftVersion $SwiftVersion `
+            -MsvcVersion $MsvcVersion | Out-Null
+        & (Join-Path $PSScriptRoot 'build-windows-shell-host-spike.ps1') `
+            -OutputPath $shellHostHelperPath `
+            -SwiftRoot $SwiftRoot `
+            -SwiftVersion $SwiftVersion `
+            -MsvcVersion $MsvcVersion | Out-Null
         Write-Host "Built $OutputPath"
+        Write-Host "Built $browserHelperPath"
+        Write-Host "Built $browserChildHelperPath"
+        Write-Host "Built $shellHostHelperPath"
     }
     finally {
         Pop-Location

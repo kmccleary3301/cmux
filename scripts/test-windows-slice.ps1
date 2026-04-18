@@ -1,7 +1,7 @@
 param(
     [string]$WorkspaceTitle = 'Smoke Workspace',
-    [string]$SmokeOutputPath = $(Join-Path $env:TEMP 'cmux-windows-slice-report.json'),
-    [string]$ArtifactDirectory = $(Join-Path $env:TEMP 'cmux-windows-slice-artifacts'),
+    [string]$SmokeOutputPath = $(Join-Path $env:TEMP ("cmux-windows-slice-report-" + [guid]::NewGuid().Guid + '.json')),
+    [string]$ArtifactDirectory = $(Join-Path $env:TEMP ("cmux-windows-slice-artifacts-" + [guid]::NewGuid().Guid)),
     [string]$SliceExecutablePath = ''
 )
 
@@ -10,21 +10,29 @@ $ErrorActionPreference = 'Stop'
 New-Item -ItemType Directory -Force -Path $ArtifactDirectory | Out-Null
 
 $script:sliceExecutable = if ([string]::IsNullOrWhiteSpace($SliceExecutablePath)) {
-    $builtPath = Join-Path $env:TEMP 'cmux_windows_slice.exe'
+    $builtPath = Join-Path $ArtifactDirectory 'cmux_windows_slice.exe'
     & (Join-Path $PSScriptRoot 'build-windows-slice.ps1') -OutputPath $builtPath | Out-Null
     $builtPath
 } else {
     $resolvedPath = Resolve-Path $SliceExecutablePath -ErrorAction Stop
     $resolvedPath.Path
 }
+$script:browserHelperExecutable = $null
+$candidateBrowserHelper = Join-Path (Split-Path -Parent $script:sliceExecutable) 'cmux_windows_webview2_spike.exe'
+if (Test-Path $candidateBrowserHelper) {
+    $script:browserHelperExecutable = (Resolve-Path $candidateBrowserHelper).Path
+}
 
 $matrixResults = @()
 $verdictResults = @()
+$docsBrowserUrl = 'data:text/html,<html><head><title>Docs Browser</title></head><body>docs-browser</body></html>'
+$portalBrowserUrl = 'data:text/html,<html><head><title>Example Browser</title></head><body>browser-portal</body></html>'
 
 function Get-FailureCategory {
     param([string]$Message)
 
     if ($Message -match 'ghosttyBridgePreviewLines|Ghostty|bridge') { return 'ghostty_bridge' }
+    if ($Message -match 'shellHostPreviewLines|shell host|shell-host') { return 'shell_host' }
     if ($Message -match 'notification') { return 'notification' }
     if ($Message -match 'browserPreviewLines|browser') { return 'browser' }
     if ($Message -match 'Layout|layout') { return 'layout' }
@@ -47,7 +55,16 @@ function Get-ReportFailureCategory {
         }
     }
 
+    if ($Report.shellHostReports) {
+        foreach ($shellHostReport in @($Report.shellHostReports)) {
+            if ($shellHostReport.failureCategory) {
+                return [string]$shellHostReport.failureCategory
+            }
+        }
+    }
+
     if ($Report.notificationPreviewLines) { return 'notification' }
+    if ($Report.shellHostPreviewLines) { return 'shell_host' }
     if ($Report.browserHostPreviewLines -or $Report.browserPreviewLines) { return 'browser' }
     if ($Report.selectedWorkspaceLayoutSummary) { return 'layout' }
     return $null
@@ -73,7 +90,13 @@ function Invoke-SmokeCase {
         [string]$ExpectedGhosttyBridgePattern = $null,
         [int]$ExpectedRuntimeSessionCount = 0,
         [string]$ExpectedBrowserHostPattern = $null,
-        [int]$ExpectedBrowserSessionCount = 0
+        [int]$ExpectedBrowserSessionCount = 0,
+        [string]$ExpectedShellHostPattern = $null,
+        [string[]]$ExpectedShellHostFocusPatterns = @(),
+        [bool]$EnableShellHostManualFocus = $false,
+        [bool]$EnableShellHostForceHighContrast = $false,
+        [bool]$ExpectedShellHostHighContrast = $false,
+        [int]$ShellHostHoldOpenMilliseconds = 0
     )
 
     $caseArtifactDirectory = Join-Path $ArtifactDirectory $Name
@@ -88,6 +111,10 @@ function Invoke-SmokeCase {
     $previousSmokeOutput = $env:CMUX_SMOKE_OUTPUT_PATH
     $previousArtifactDirectory = $env:CMUX_SMOKE_ARTIFACT_DIR
     $previousNotificationUiSuppressed = $env:CMUX_WINDOWS_NOTIFICATION_SUPPRESS_UI
+    $previousBrowserHelperExecutable = $env:CMUX_WINDOWS_BROWSER_HELPER_EXE
+    $previousShellHostManualFocus = $env:CMUX_WINDOWS_SHELL_HOST_MANUAL_FOCUS
+    $previousShellHostForceHighContrast = $env:CMUX_WINDOWS_SHELL_HOST_FORCE_HIGH_CONTRAST
+    $previousShellHostHoldOpen = $env:CMUX_WINDOWS_SHELL_HOST_HOLD_OPEN_MS
     $commandSequencePath = $null
 
     try {
@@ -119,6 +146,26 @@ function Invoke-SmokeCase {
             $env:CMUX_SMOKE_OUTPUT_PATH = $caseSmokeOutputPath
             $env:CMUX_SMOKE_ARTIFACT_DIR = $caseArtifactDirectory
             $env:CMUX_WINDOWS_NOTIFICATION_SUPPRESS_UI = '1'
+            if ($script:browserHelperExecutable) {
+                $env:CMUX_WINDOWS_BROWSER_HELPER_EXE = $script:browserHelperExecutable
+            } else {
+                Remove-Item Env:CMUX_WINDOWS_BROWSER_HELPER_EXE -ErrorAction SilentlyContinue
+            }
+            if ($EnableShellHostManualFocus) {
+                $env:CMUX_WINDOWS_SHELL_HOST_MANUAL_FOCUS = '1'
+            } else {
+                Remove-Item Env:CMUX_WINDOWS_SHELL_HOST_MANUAL_FOCUS -ErrorAction SilentlyContinue
+            }
+            if ($EnableShellHostForceHighContrast) {
+                $env:CMUX_WINDOWS_SHELL_HOST_FORCE_HIGH_CONTRAST = '1'
+            } else {
+                Remove-Item Env:CMUX_WINDOWS_SHELL_HOST_FORCE_HIGH_CONTRAST -ErrorAction SilentlyContinue
+            }
+            if ($ShellHostHoldOpenMilliseconds -gt 0) {
+                $env:CMUX_WINDOWS_SHELL_HOST_HOLD_OPEN_MS = [string]$ShellHostHoldOpenMilliseconds
+            } else {
+                Remove-Item Env:CMUX_WINDOWS_SHELL_HOST_HOLD_OPEN_MS -ErrorAction SilentlyContinue
+            }
 
             & $script:sliceExecutable | Out-Null
 
@@ -223,6 +270,52 @@ function Invoke-SmokeCase {
                 }
             }
 
+            if ($ExpectedShellHostPattern) {
+                if (-not $report.shellHostPreviewLines) {
+                    throw "[$Name] Expected shellHostPreviewLines to be populated"
+                }
+                $shellHostPreviewText = ($report.shellHostPreviewLines -join "`n")
+                if ($shellHostPreviewText -notmatch $ExpectedShellHostPattern) {
+                    throw "[$Name] Expected shellHostPreviewLines to match '$ExpectedShellHostPattern'"
+                }
+                if (-not $report.shellHostReports) {
+                    throw "[$Name] Expected shellHostReports to be populated"
+                }
+                if ($ExpectedShellHostFocusPatterns.Count -gt 0) {
+                    $helperReportPath = [string]$report.shellHostReports[0].helperReportPath
+                    if ([string]::IsNullOrWhiteSpace($helperReportPath) -or -not (Test-Path $helperReportPath)) {
+                        throw "[$Name] Expected helperReportPath for shell host focus validation"
+                    }
+                    $helperReport = Get-Content -Raw $helperReportPath | ConvertFrom-Json
+                    $focusLogPath = [string]$helperReport.focusLogPath
+                    if ([string]::IsNullOrWhiteSpace($focusLogPath) -or -not (Test-Path $focusLogPath)) {
+                        throw "[$Name] Expected focusLogPath for shell host focus validation"
+                    }
+                    $focusLog = Get-Content -Raw $focusLogPath
+                    foreach ($pattern in $ExpectedShellHostFocusPatterns) {
+                        if ($focusLog -notmatch $pattern) {
+                            throw "[$Name] Expected shell host focus log to match '$pattern'"
+                        }
+                    }
+                }
+                if ($ExpectedShellHostHighContrast) {
+                    $helperReportPath = [string]$report.shellHostReports[0].helperReportPath
+                    if ([string]::IsNullOrWhiteSpace($helperReportPath) -or -not (Test-Path $helperReportPath)) {
+                        throw "[$Name] Expected helperReportPath for shell host high-contrast validation"
+                    }
+                    $helperReport = Get-Content -Raw $helperReportPath | ConvertFrom-Json
+                    if ($helperReport.highContrastForced -ne $true) {
+                        throw "[$Name] Expected shell host helper report to force high contrast"
+                    }
+                    if ($helperReport.highContrastActive -ne $true) {
+                        throw "[$Name] Expected shell host helper report to mark high contrast active"
+                    }
+                    if ($helperReport.highContrastSettingObserved -ne $true) {
+                        throw "[$Name] Expected shell host helper report to observe the high-contrast setting"
+                    }
+                }
+            }
+
             $runtimeSessionCount = @($report.bridgedPanelRuntimeSessionIDs).Count
             if ($runtimeSessionCount -ne $ExpectedRuntimeSessionCount) {
                 throw "[$Name] Expected bridgedPanelRuntimeSessionIDs count=$ExpectedRuntimeSessionCount but found $runtimeSessionCount"
@@ -258,6 +351,7 @@ function Invoke-SmokeCase {
                 browserHostPreview = [bool]$report.browserHostPreviewLines
                 notificationPreview = [bool]$report.notificationPreviewLines
                 ghosttyBridgePreview = [bool]$report.ghosttyBridgePreviewLines
+                shellHostPreview = [bool]$report.shellHostPreviewLines
                 ghosttyBridgeFailureCategories = @($report.ghosttyBridgeReports | ForEach-Object { $_.failureCategory } | Where-Object { $_ })
                 runtimeSessionCount = $runtimeSessionCount
                 browserSessionCount = $browserSessionCount
@@ -299,6 +393,10 @@ function Invoke-SmokeCase {
         if ($null -ne $previousSmokeOutput) { $env:CMUX_SMOKE_OUTPUT_PATH = $previousSmokeOutput } else { Remove-Item Env:CMUX_SMOKE_OUTPUT_PATH -ErrorAction SilentlyContinue }
         if ($null -ne $previousArtifactDirectory) { $env:CMUX_SMOKE_ARTIFACT_DIR = $previousArtifactDirectory } else { Remove-Item Env:CMUX_SMOKE_ARTIFACT_DIR -ErrorAction SilentlyContinue }
         if ($null -ne $previousNotificationUiSuppressed) { $env:CMUX_WINDOWS_NOTIFICATION_SUPPRESS_UI = $previousNotificationUiSuppressed } else { Remove-Item Env:CMUX_WINDOWS_NOTIFICATION_SUPPRESS_UI -ErrorAction SilentlyContinue }
+        if ($null -ne $previousBrowserHelperExecutable) { $env:CMUX_WINDOWS_BROWSER_HELPER_EXE = $previousBrowserHelperExecutable } else { Remove-Item Env:CMUX_WINDOWS_BROWSER_HELPER_EXE -ErrorAction SilentlyContinue }
+        if ($null -ne $previousShellHostManualFocus) { $env:CMUX_WINDOWS_SHELL_HOST_MANUAL_FOCUS = $previousShellHostManualFocus } else { Remove-Item Env:CMUX_WINDOWS_SHELL_HOST_MANUAL_FOCUS -ErrorAction SilentlyContinue }
+        if ($null -ne $previousShellHostForceHighContrast) { $env:CMUX_WINDOWS_SHELL_HOST_FORCE_HIGH_CONTRAST = $previousShellHostForceHighContrast } else { Remove-Item Env:CMUX_WINDOWS_SHELL_HOST_FORCE_HIGH_CONTRAST -ErrorAction SilentlyContinue }
+        if ($null -ne $previousShellHostHoldOpen) { $env:CMUX_WINDOWS_SHELL_HOST_HOLD_OPEN_MS = $previousShellHostHoldOpen } else { Remove-Item Env:CMUX_WINDOWS_SHELL_HOST_HOLD_OPEN_MS -ErrorAction SilentlyContinue }
         if ($commandSequencePath) { Remove-Item -Force $commandSequencePath -ErrorAction SilentlyContinue }
     }
 }
@@ -314,10 +412,11 @@ Invoke-SmokeCase `
 Invoke-SmokeCase `
     -Name 'browser' `
     -BootstrapCommand 'open-browser-portal' `
-    -BootstrapValue 'https://example.com' `
+    -BootstrapValue $portalBrowserUrl `
     -BootstrapTitle 'Example Browser' `
     -ExpectedTitle 'Workspace' `
-    -ExpectedArtifactName 'browser-preview.txt'
+    -ExpectedArtifactName 'browser-preview.txt' `
+    -ExpectedBrowserHostPattern 'HostKind: webview2[\s\S]*NavigationCompleted: true[\s\S]*Success: true'
 
 Invoke-SmokeCase `
     -Name 'directory' `
@@ -353,7 +452,7 @@ Invoke-SmokeCase `
 Invoke-SmokeCase `
     -Name 'browser-panel' `
     -BootstrapCommand 'add-browser-panel' `
-    -BootstrapValue 'https://example.com/docs' `
+    -BootstrapValue $docsBrowserUrl `
     -BootstrapTitle 'Docs Browser' `
     -ExpectedTitle 'Workspace' `
     -ExpectedArtifactName 'shell-preview.txt' `
@@ -369,7 +468,7 @@ Invoke-SmokeCase `
     -Name 'browser-split-horizontal' `
     -CommandSequence @(
         @{ command = 'add-terminal-panel'; title = 'Primary Terminal' },
-        @{ command = 'split-browser-horizontal'; value = 'https://example.com/docs'; title = 'Docs Browser' }
+        @{ command = 'split-browser-horizontal'; value = $docsBrowserUrl; title = 'Docs Browser' }
     ) `
     -ExpectedTitle 'Workspace' `
     -ExpectedArtifactName 'browser-host-preview.txt' `
@@ -449,6 +548,48 @@ Invoke-SmokeCase `
     -ExpectedEventTracePrefixes @('surface-focused','surface-title-changed','browser-location-changed','surface-closed') `
     -ExpectedBrowserHostPattern 'Operation: close' `
     -ExpectedBrowserSessionCount 0
+
+Invoke-SmokeCase `
+    -Name 'mixed-shell-host' `
+    -CommandSequence @(
+        @{ command = 'add-terminal-panel'; title = 'Primary Terminal' },
+        @{ command = 'split-browser-horizontal'; value = $docsBrowserUrl; title = 'Docs Browser' },
+        @{ command = 'open-shell-host' }
+    ) `
+    -ExpectedTitle 'Workspace' `
+    -ExpectedArtifactName 'shell-host-preview.txt' `
+    -ExpectedPanelCount 2 `
+    -ExpectedFocusedPanelTitle 'Docs Browser' `
+    -ExpectedLayoutPattern 'split\(horizontal; first=pane\(selected=Primary Terminal; panels=\[Primary Terminal\]\); second=pane\(selected=Docs Browser; panels=\[Docs Browser\]\)\)' `
+    -ExpectedCommandTracePrefixes @('select-workspace','upsert-panel terminal Primary Terminal','set-workspace-layout','set-workspace-focused-panel','upsert-panel browser Docs Browser','set-workspace-layout','set-workspace-focused-panel') `
+    -ExpectedEventTracePrefixes @('surface-focused','surface-title-changed','browser-location-changed') `
+    -ExpectedBrowserHostPattern 'Operation: open-panel' `
+    -ExpectedShellHostPattern 'TerminalSurfaceCreated: true[\s\S]*BrowserControllerReady: true[\s\S]*BrowserStatus: webview2-ready[\s\S]*FocusTransferCount: [1-9][\s\S]*MaximizeRoundTripSeen: true[\s\S]*Success: true' `
+    -ExpectedShellHostFocusPatterns @('focus=terminal .*actual=true') `
+    -EnableShellHostManualFocus $true `
+    -ShellHostHoldOpenMilliseconds 1500 `
+    -ExpectedBrowserSessionCount 1
+
+Invoke-SmokeCase `
+    -Name 'mixed-shell-host-high-contrast' `
+    -CommandSequence @(
+        @{ command = 'add-terminal-panel'; title = 'Primary Terminal' },
+        @{ command = 'split-browser-horizontal'; value = $docsBrowserUrl; title = 'Docs Browser' },
+        @{ command = 'open-shell-host' }
+    ) `
+    -ExpectedTitle 'Workspace' `
+    -ExpectedArtifactName 'shell-host-preview.txt' `
+    -ExpectedPanelCount 2 `
+    -ExpectedFocusedPanelTitle 'Docs Browser' `
+    -ExpectedLayoutPattern 'split\(horizontal; first=pane\(selected=Primary Terminal; panels=\[Primary Terminal\]\); second=pane\(selected=Docs Browser; panels=\[Docs Browser\]\)\)' `
+    -ExpectedCommandTracePrefixes @('select-workspace','upsert-panel terminal Primary Terminal','set-workspace-layout','set-workspace-focused-panel','upsert-panel browser Docs Browser','set-workspace-layout','set-workspace-focused-panel') `
+    -ExpectedEventTracePrefixes @('surface-focused','surface-title-changed','browser-location-changed') `
+    -ExpectedBrowserHostPattern 'Operation: open-panel' `
+    -ExpectedShellHostPattern 'TerminalSurfaceCreated: true[\s\S]*BrowserControllerReady: true[\s\S]*BrowserStatus: webview2-ready[\s\S]*MaximizeRoundTripSeen: true[\s\S]*Success: true' `
+    -EnableShellHostForceHighContrast $true `
+    -ShellHostHoldOpenMilliseconds 1500 `
+    -ExpectedShellHostHighContrast $true `
+    -ExpectedBrowserSessionCount 1
 
 Invoke-SmokeCase `
     -Name 'workspace-lifecycle' `

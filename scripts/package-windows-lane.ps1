@@ -67,8 +67,16 @@ $resolvedReleaseLabel = if ([string]::IsNullOrWhiteSpace($ReleaseLabel)) {
 }
 
 $ghosttyExe = Join-Path $projectRoot 'ghostty\zig-out\bin\ghostty.exe'
+$ghosttyLib = Join-Path $projectRoot 'ghostty\zig-out\lib\libghostty.so'
+$ghosttyResourcesDir = Join-Path $projectRoot 'ghostty\zig-out\share\ghostty'
 if (-not (Test-Path $ghosttyExe)) {
     throw "Ghostty executable not found at $ghosttyExe"
+}
+if (-not (Test-Path $ghosttyLib)) {
+    throw "Ghostty embedded library not found at $ghosttyLib"
+}
+if (-not (Test-Path $ghosttyResourcesDir)) {
+    throw "Ghostty resources directory not found at $ghosttyResourcesDir"
 }
 
 Invoke-CmuxWindowsSlicePackageLocked {
@@ -77,10 +85,12 @@ Invoke-CmuxWindowsSlicePackageLocked {
     $logsDirectory = Join-Path $OutputRoot 'logs'
     $artifactsDirectory = Join-Path $OutputRoot 'artifacts'
     $toolsDirectory = Join-Path $OutputRoot 'tools'
+    $resourcesDirectory = Join-Path $OutputRoot 'resources'
+    $ghosttyResourcesOutputDirectory = Join-Path $resourcesDirectory 'ghostty'
     $ghosttyLogsDirectory = Join-Path $logsDirectory 'ghostty'
     $cmuxLogsDirectory = Join-Path $logsDirectory 'cmux'
 
-    foreach ($directory in @($OutputRoot, $binDirectory, $docsDirectory, $logsDirectory, $artifactsDirectory, $toolsDirectory, $ghosttyLogsDirectory, $cmuxLogsDirectory)) {
+    foreach ($directory in @($OutputRoot, $binDirectory, $docsDirectory, $logsDirectory, $artifactsDirectory, $toolsDirectory, $resourcesDirectory, $ghosttyResourcesOutputDirectory, $ghosttyLogsDirectory, $cmuxLogsDirectory)) {
         New-Item -ItemType Directory -Force -Path $directory | Out-Null
     }
 
@@ -93,6 +103,8 @@ Invoke-CmuxWindowsSlicePackageLocked {
         -Sync | Out-Null
 
     Copy-Item -Path $ghosttyExe -Destination (Join-Path $binDirectory 'ghostty.exe') -Force
+    Copy-Item -Path $ghosttyLib -Destination (Join-Path $binDirectory 'libghostty.so') -Force
+    Copy-Item -Path (Join-Path $ghosttyResourcesDir '*') -Destination $ghosttyResourcesOutputDirectory -Recurse -Force
     Copy-Item -Path (Join-Path $projectRoot 'docs_tmp\WINDOWS_SLICE_BUILD_CONTRACT_V1.md') -Destination (Join-Path $docsDirectory 'WINDOWS_SLICE_BUILD_CONTRACT_V1.md') -Force
     Copy-Item -Path (Join-Path $projectRoot 'docs_tmp\WINDOWS_PORT_EXECUTION_PLAN_V1.md') -Destination (Join-Path $docsDirectory 'WINDOWS_PORT_EXECUTION_PLAN_V1.md') -Force
     Copy-Item -Path (Join-Path $projectRoot 'docs_tmp\WINDOWS_CLEAN_MACHINE_BOOTSTRAP_V1.md') -Destination (Join-Path $docsDirectory 'WINDOWS_CLEAN_MACHINE_BOOTSTRAP_V1.md') -Force
@@ -102,7 +114,11 @@ Invoke-CmuxWindowsSlicePackageLocked {
     Copy-Item -Path (Join-Path $PSScriptRoot 'test-windows-slice.ps1') -Destination (Join-Path $toolsDirectory 'test-windows-slice.ps1') -Force
     Copy-Item -Path (Join-Path $PSScriptRoot 'test-windows-notification.ps1') -Destination (Join-Path $toolsDirectory 'test-windows-notification.ps1') -Force
     Copy-Item -Path (Join-Path $PSScriptRoot 'test-windows-all.ps1') -Destination (Join-Path $toolsDirectory 'test-windows-all.ps1') -Force
+    Copy-Item -Path (Join-Path $PSScriptRoot 'test-windows-shell-host-crash-recovery.ps1') -Destination (Join-Path $toolsDirectory 'test-windows-shell-host-crash-recovery.ps1') -Force
+    Copy-Item -Path (Join-Path $PSScriptRoot 'test-windows-shell-host-crash-retention.ps1') -Destination (Join-Path $toolsDirectory 'test-windows-shell-host-crash-retention.ps1') -Force
+    Copy-Item -Path (Join-Path $PSScriptRoot 'test-windows-shell-host-crash-soak.ps1') -Destination (Join-Path $toolsDirectory 'test-windows-shell-host-crash-soak.ps1') -Force
     Copy-Item -Path (Join-Path $PSScriptRoot 'run-windows-lane-ci.ps1') -Destination (Join-Path $toolsDirectory 'run-windows-lane-ci.ps1') -Force
+    Copy-Item -Path (Join-Path $PSScriptRoot 'export-windows-lane-triage-bundle.ps1') -Destination (Join-Path $toolsDirectory 'export-windows-lane-triage-bundle.ps1') -Force
     Copy-Item -Path (Join-Path $PSScriptRoot 'build-windows-release.ps1') -Destination (Join-Path $toolsDirectory 'build-windows-release.ps1') -Force
 
     $readme = @"
@@ -114,10 +130,19 @@ Version: $resolvedVersionLabel
 Layout:
 - bin\\cmux-windows-slice.exe
 - bin\\ghostty.exe
+- bin\\libghostty.so
+- bin\\cmux_windows_webview2_spike.exe
+- bin\\cmux_windows_webview2_child_host.exe
+- bin\\cmux_windows_shell_host_spike.exe
 - tools\\windows-slice-package-lock.ps1
 - tools\\test-windows-all.ps1
+- tools\\test-windows-shell-host-crash-recovery.ps1
+- tools\\test-windows-shell-host-crash-retention.ps1
+- tools\\test-windows-shell-host-crash-soak.ps1
 - tools\\run-windows-lane-ci.ps1
+- tools\\export-windows-lane-triage-bundle.ps1
 - tools\\build-windows-release.ps1
+- resources\\ghostty\\
 - artifacts\\
 - logs\\
 - docs\\
@@ -130,8 +155,14 @@ Operator quickstart:
 
 Primary diagnostics:
   logs\\windows-lane-ci.log
-  artifacts\\smoke\\smoke-verdict.json
-  artifacts\\smoke\\slice\\*\\ghostty-bridge-reports.json
+  artifacts\\latest\\package-ci-verdict.json
+  artifacts\\latest\\package-ci-summary.json
+  artifacts\\latest\\crash-triage-summary.json
+  artifacts\\latest\\triage-bundle-summary.json
+  artifacts\\latest\\windows-lane-triage-latest.zip
+  artifacts\\latest\\latest-run.txt
+  artifacts\\r\\<run-id>\\smoke-verdict.json
+  artifacts\\r\\<run-id>\\slice\\*\\ghostty-bridge-reports.json
 "@
 
     Set-Content -Path (Join-Path $OutputRoot 'README.txt') -Value $readme -Encoding UTF8
@@ -143,15 +174,29 @@ cmux Windows lane runtime prerequisites
 - No repo-relative paths are required at runtime; the packaged lane expects:
   - .\bin\cmux-windows-slice.exe
   - .\bin\ghostty.exe
+  - .\bin\cmux_windows_webview2_spike.exe
+  - .\bin\cmux_windows_webview2_child_host.exe
+  - .\bin\cmux_windows_shell_host_spike.exe
+  - .\resources\ghostty\
 - Validation entrypoint:
   powershell -ExecutionPolicy Bypass -File .\tools\run-windows-lane-ci.ps1 -InstallRoot '$OutputRoot'
 - Validation artifacts:
-  - .\artifacts\smoke\
+  - .\artifacts\r\<run-id>\
+  - .\artifacts\latest\
   - .\logs\windows-lane-ci.log
+- Crash triage summary:
+  - .\artifacts\latest\crash-triage-summary.json
+- Crash triage bundle:
+  - .\artifacts\latest\triage-bundle-summary.json
+  - .\artifacts\latest\windows-lane-triage-latest.zip
 - Ghostty bridge diagnostics:
-  - .\artifacts\smoke\slice\*\ghostty-bridge-reports.json
-  - .\artifacts\smoke\slice\*\ghostty-session-*-stdout.log
-  - .\artifacts\smoke\slice\*\ghostty-session-*-stderr.log
+  - .\artifacts\r\<run-id>\slice\*\ghostty-bridge-reports.json
+  - .\artifacts\r\<run-id>\slice\*\ghostty-session-*-stdout.log
+  - .\artifacts\r\<run-id>\slice\*\ghostty-session-*-stderr.log
+- Mixed shell-host diagnostics:
+  - .\artifacts\r\<run-id>\slice\mixed-shell-host\shell-host-preview.txt
+  - .\artifacts\r\<run-id>\slice\mixed-shell-host\captured-artifacts.json
+  - .\artifacts\r\<run-id>\slice\mixed-shell-host\captured-runtime\
 - Clean-machine build/bootstrap instructions:
   - .\docs\WINDOWS_CLEAN_MACHINE_BOOTSTRAP_V1.md
 - Operator runbook:
@@ -190,13 +235,30 @@ cmux Windows lane runtime prerequisites
             'tools\\test-windows-slice.ps1',
             'tools\\test-windows-notification.ps1',
             'tools\\test-windows-all.ps1',
+            'tools\\test-windows-shell-host-crash-recovery.ps1',
+            'tools\\test-windows-shell-host-crash-retention.ps1',
+            'tools\\test-windows-shell-host-crash-soak.ps1',
             'tools\\run-windows-lane-ci.ps1',
+            'tools\\export-windows-lane-triage-bundle.ps1',
             'tools\\build-windows-release.ps1'
         )
-        artifactRoot = 'artifacts\\smoke'
+        runtimeAssets = @(
+            'bin\\ghostty.exe',
+            'bin\\libghostty.so',
+            'bin\\cmux_windows_webview2_spike.exe',
+            'bin\\cmux_windows_webview2_child_host.exe',
+            'bin\\cmux_windows_shell_host_spike.exe',
+            'resources\\ghostty'
+        )
+        artifactRootPattern = 'artifacts\\r\\<run-id>'
+        latestArtifactPointerRoot = 'artifacts\\latest'
         logPath = 'logs\\windows-lane-ci.log'
-        ghosttyLogPattern = 'artifacts\\smoke\\slice\\*\\ghostty-session-*-stdout.log / *-stderr.log'
-        ghosttyBridgeReportPattern = 'artifacts\\smoke\\slice\\*\\ghostty-bridge-reports.json'
+        crashTriageSummaryPath = 'artifacts\\latest\\crash-triage-summary.json'
+        triageBundleSummaryPath = 'artifacts\\latest\\triage-bundle-summary.json'
+        triageBundlePath = 'artifacts\\latest\\windows-lane-triage-latest.zip'
+        ghosttyLogPattern = 'artifacts\\r\\<run-id>\\slice\\*\\ghostty-session-*-stdout.log / *-stderr.log'
+        ghosttyBridgeReportPattern = 'artifacts\\r\\<run-id>\\slice\\*\\ghostty-bridge-reports.json'
+        shellHostArtifactPattern = 'artifacts\\r\\<run-id>\\slice\\mixed-shell-host\\captured-runtime\\*'
     }
 
     $buildInfo | ConvertTo-Json -Depth 5 | Set-Content -Path (Join-Path $OutputRoot 'build-info.json') -Encoding UTF8

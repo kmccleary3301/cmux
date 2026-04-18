@@ -47,3 +47,11 @@ tests/visual_report.html
 # Local scratch (screenshots, etc.)
 tmp/
 tmp-*/
+
+# Windows build/package artifacts
+dist/
+WindowsSlicePackage/.build/
+WindowsSlicePackage/*.obj
+gh-run-*.log
+*.obj
+*.pdb

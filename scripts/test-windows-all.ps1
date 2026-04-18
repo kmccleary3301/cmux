@@ -1,5 +1,5 @@
 param(
-    [string]$RootArtifactDirectory = $(Join-Path $env:TEMP 'cmux-windows-all-artifacts'),
+    [string]$RootArtifactDirectory = $(Join-Path $env:TEMP ("cmux-windows-all-artifacts-" + [guid]::NewGuid().Guid)),
     [string]$SliceExecutablePath = ''
 )
 
