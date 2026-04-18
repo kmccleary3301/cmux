@@ -1,6 +1,9 @@
 <h1 align="center">cmux</h1>
 <p align="center">A Ghostty-based macOS terminal with vertical tabs and notifications for AI coding agents</p>
 
+> [!IMPORTANT]
+> This fork is **macOS-first for end users**, but it also carries a **developer-facing Windows parity lane** built around embedded Ghostty, a real WebView2 browser host, a mixed terminal/browser shell host, and packaged Windows validation. The Windows work is real and actively maintained in this repo, but it should still be read as a fork-specific development lane rather than a public stable release claim.
+
 <p align="center">
   <a href="https://github.com/manaflow-ai/cmux/releases/latest/download/cmux-macos.dmg">
     <img src="./docs/assets/macos-badge.png" alt="Download cmux for macOS" width="180" />
@@ -17,12 +20,44 @@
 </p>
 
 <p align="center">
+  <img src="https://img.shields.io/badge/platform-macOS%20app-111827" alt="macOS app" />
+  <img src="https://img.shields.io/badge/platform-Windows%20dev%20lane-1d4ed8" alt="Windows development lane" />
+  <img src="https://img.shields.io/github/actions/workflow/status/kmccleary3301/cmux/ci.yml?branch=codex%2Fmacos-validation&label=CI" alt="CI status" />
+  <img src="https://img.shields.io/github/actions/workflow/status/kmccleary3301/cmux/ci-macos-compat.yml?branch=codex%2Fmacos-validation&label=macOS%20compat" alt="macOS compatibility status" />
+  <img src="https://img.shields.io/badge/browser-WebView2%20host-2563eb" alt="WebView2 host" />
+  <img src="https://img.shields.io/badge/terminal-embedded%20Ghostty-16a34a" alt="embedded Ghostty" />
+  <img src="https://img.shields.io/badge/license-AGPL--3.0-7c3aed" alt="AGPL-3.0" />
+</p>
+
+<p align="center">
   <img src="./docs/assets/main-first-image.png" alt="cmux screenshot" width="900" />
 </p>
 
 <p align="center">
   <a href="https://www.youtube.com/watch?v=i-WxO5YUTOs">▶ Demo video</a> · <a href="https://cmux.com/blog/zen-of-cmux">The Zen of cmux</a>
 </p>
+
+## At a glance
+
+| Area | Current state |
+|---|---|
+| macOS app | 🟢 Shipping app path with AppKit + Swift + libghostty |
+| Windows lane | 🔵 Developer-facing parity lane with embedded Ghostty, WebView2, mixed shell host, packageable validation |
+| Browser | 🟢 Real WebView2-backed Windows host in this fork, scriptable browser pane on macOS |
+| Terminal | 🟢 Ghostty/libghostty-backed on both the shipping macOS lane and the Windows parity lane |
+| Validation | 🟢 Repo-local smoke suites, parity probes, packaged-lane CI runner |
+| Status | 🔵 Strong Windows lane and parity infrastructure; macOS remains the end-user release target |
+
+## Quick navigation
+
+- [Features](#features)
+- [Install](#install)
+- [Windows development lane](#windows-development-lane)
+- [Repository map](#repository-map)
+- [Why cmux?](#why-cmux)
+- [Documentation](#documentation)
+- [Keyboard shortcuts](#keyboard-shortcuts)
+- [Contributing](#contributing)
 
 ## Features
 
@@ -173,6 +208,39 @@ Validate the packaged lane:
 ### Current Windows caveat
 
 The Windows suites are best run serially. Build and artifact isolation is much better than it was, but broad parallel execution across the full slice, package, and parity families is still not the recommended default.
+
+## Repository map
+
+```text
+cmux/
+├─ Sources/
+│  ├─ Windows/                    # Windows bootstrap, Ghostty bridge, browser host, shell host, smoke harness
+│  └─ Core/                       # Cross-platform reducer/state/bootstrap logic
+├─ WindowsSlicePackage/           # Formal SwiftPM boundary for the Windows-safe slice
+├─ scripts/                       # Build, package, parity probes, shell-host and WebView2 helpers
+├─ cmuxTests/                     # Swift tests for core behavior and bridge logic
+├─ docs/                          # Product and user-facing documentation/assets
+├─ dist/                          # Generated package/release outputs (ignored in git)
+├─ daemon/                        # Remote daemon implementation and release assets
+├─ vendor/                        # Vendored dependencies, including the WebView2 SDK in this fork
+├─ web/                           # Web-facing assets and related tooling
+└─ ghostty/                       # Embedded Ghostty dependency used by the macOS app lane
+```
+
+### Most relevant files in this fork
+
+| Path | Why it matters |
+|---|---|
+| [`Sources/Windows/CmuxWindowsBootstrapMain.swift`](./Sources/Windows/CmuxWindowsBootstrapMain.swift) | Windows slice entrypoint and command/bootstrap wiring |
+| [`Sources/Windows/CmuxWindowsGhosttyBridge.swift`](./Sources/Windows/CmuxWindowsGhosttyBridge.swift) | Real Ghostty-backed Windows bridge |
+| [`Sources/Windows/CmuxWindowsBrowserHost.swift`](./Sources/Windows/CmuxWindowsBrowserHost.swift) | WebView2-backed browser host selection and orchestration |
+| [`Sources/Windows/CmuxWindowsShellHost.swift`](./Sources/Windows/CmuxWindowsShellHost.swift) | Real mixed terminal/browser shell-host integration |
+| [`Sources/Windows/CmuxWindowsSmokeHarness.swift`](./Sources/Windows/CmuxWindowsSmokeHarness.swift) | Structured reports and proof artifacts |
+| [`WindowsSlicePackage/Package.swift`](./WindowsSlicePackage/Package.swift) | Formal SwiftPM boundary for the Windows-safe slice |
+| [`scripts/test-windows-all.ps1`](./scripts/test-windows-all.ps1) | Canonical repo-local Windows suite |
+| [`scripts/test-windows-north-star-spikes.ps1`](./scripts/test-windows-north-star-spikes.ps1) | Canonical parity/spike suite |
+| [`scripts/package-windows-lane.ps1`](./scripts/package-windows-lane.ps1) | Windows package generation |
+| [`scripts/run-windows-lane-ci.ps1`](./scripts/run-windows-lane-ci.ps1) | Install-root validation and triage contract |
 
 ## Why cmux?
 
