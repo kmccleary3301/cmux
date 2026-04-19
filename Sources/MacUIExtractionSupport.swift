@@ -156,8 +156,6 @@ extension AppDelegate {
         let synchronizedManager = synchronizeActiveMainWindowContext(preferredWindow: preferredWindow)
         let resolvedManager = synchronizedManager
             ?? tabManager
-            ?? mainWindowContexts.values.first(where: { resolvedWindow(for: $0) != nil })?.tabManager
-            ?? mainWindowContexts.values.first?.tabManager
 
         guard let resolvedManager else {
             macUIExtractionLog("resolve bindings failed: missing tabManager")
@@ -165,9 +163,6 @@ extension AppDelegate {
         }
 
         let resolvedSidebar = sidebarState
-            ?? mainWindowContexts.values.first(where: { $0.tabManager === resolvedManager })?.sidebarState
-            ?? mainWindowContexts.values.first(where: { resolvedWindow(for: $0) != nil })?.sidebarState
-            ?? mainWindowContexts.values.first?.sidebarState
 
         guard let resolvedSidebar else {
             macUIExtractionLog("resolve bindings failed: missing sidebarState")
