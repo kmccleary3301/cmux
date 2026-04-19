@@ -12,8 +12,6 @@ jobs:
   extract:
     runs-on: macos-15
     timeout-minutes: 45
-    env:
-      CMUX_UI_EXTRACTION_OUTPUT_DIR: ${{ runner.temp }}/mac-ui-extraction
 
     steps:
       - name: Checkout
@@ -106,7 +104,9 @@ jobs:
         run: |
           set -euo pipefail
           chmod +x scripts/macos-ui-extract.sh
-          scripts/macos-ui-extract.sh "$CMUX_UI_EXTRACTION_OUTPUT_DIR"
+          OUTPUT_DIR="$RUNNER_TEMP/mac-ui-extraction"
+          echo "CMUX_UI_EXTRACTION_OUTPUT_DIR=$OUTPUT_DIR" >> "$GITHUB_ENV"
+          scripts/macos-ui-extract.sh "$OUTPUT_DIR"
 
       - name: Upload extraction artifacts
         if: always()
