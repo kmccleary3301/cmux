@@ -2668,6 +2668,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, @preconcurrency UNUser
         prepareStartupSessionSnapshotIfNeeded()
         startSessionAutosaveTimerIfNeeded()
 #if DEBUG
+        setupMacUIExtractionIfNeeded()
         setupJumpUnreadUITestIfNeeded()
         setupGotoSplitUITestIfNeeded()
         setupBonsplitTabDragUITestIfNeeded()
