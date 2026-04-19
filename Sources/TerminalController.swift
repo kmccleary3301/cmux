@@ -12742,18 +12742,43 @@ class TerminalController {
             let windowNumber = CGWindowID(window.windowNumber)
 
             // Capture the window using CGWindowListCreateImage
-            guard let cgImage = CGWindowListCreateImage(
+            if let cgImage = CGWindowListCreateImage(
                 .null,  // Capture just the window bounds
                 .optionIncludingWindow,
                 windowNumber,
                 [.boundsIgnoreFraming, .nominalResolution]
-            ) else {
-                captureError = "Failed to capture window image"
+            ) {
+                // Convert to NSBitmapImageRep and save as PNG
+                let bitmap = NSBitmapImageRep(cgImage: cgImage)
+                guard let pngData = bitmap.representation(using: .png, properties: [:]) else {
+                    captureError = "Failed to create PNG data"
+                    return
+                }
+
+                do {
+                    try pngData.write(to: outputPath)
+                } catch {
+                    captureError = "Failed to write file: \(error.localizedDescription)"
+                }
                 return
             }
 
-            // Convert to NSBitmapImageRep and save as PNG
-            let bitmap = NSBitmapImageRep(cgImage: cgImage)
+            // Fallback for CI or layer-hosted windows where CGWindow capture can be flaky.
+            guard let captureView = window.contentView ?? window.contentViewController?.view else {
+                captureError = "Failed to capture window image"
+                return
+            }
+            captureView.layoutSubtreeIfNeeded()
+            let captureBounds = captureView.bounds.integral
+            guard captureBounds.width > 0, captureBounds.height > 0 else {
+                captureError = "Failed to capture window image"
+                return
+            }
+            guard let bitmap = captureView.bitmapImageRepForCachingDisplay(in: captureBounds) else {
+                captureError = "Failed to allocate window bitmap"
+                return
+            }
+            captureView.cacheDisplay(in: captureBounds, to: bitmap)
             guard let pngData = bitmap.representation(using: .png, properties: [:]) else {
                 captureError = "Failed to create PNG data"
                 return

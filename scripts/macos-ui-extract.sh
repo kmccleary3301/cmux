@@ -114,6 +114,31 @@ post_seed_actions() {
   esac
 }
 
+capture_terminal_panel_fallback() {
+  local socket_path="$1"
+  local scenario_dir="$2"
+  local scenario="$3"
+
+  local panel_snapshot_response
+  panel_snapshot_response="$(socket_cmd "$socket_path" "panel_snapshot 0 ${scenario}_panel" || true)"
+  printf '%s\n' "$panel_snapshot_response" > "$scenario_dir/panel-snapshot-response.txt"
+  if [[ "$panel_snapshot_response" != OK\ * ]]; then
+    return 1
+  fi
+
+  local panel_snapshot_path
+  panel_snapshot_path="$(printf '%s\n' "$panel_snapshot_response" | awk '{print $5}')"
+  if [[ -z "$panel_snapshot_path" || ! -f "$panel_snapshot_path" ]]; then
+    return 1
+  fi
+
+  cp "$panel_snapshot_path" "$scenario_dir/terminal-panel.png"
+  if [[ ! -f "$scenario_dir/full-window.png" ]]; then
+    cp "$panel_snapshot_path" "$scenario_dir/full-window.png"
+  fi
+  return 0
+}
+
 cleanup_app() {
   local pid="$1"
   if kill -0 "$pid" 2>/dev/null; then
@@ -196,22 +221,29 @@ for scenario in "${SCENARIOS[@]}"; do
   screenshot_response="$(socket_cmd "$socket_path" "screenshot $scenario")"
   if [[ "$screenshot_response" != OK\ * ]]; then
     echo "$screenshot_response" > "$scenario_dir/screenshot-error.txt"
-    echo "error: screenshot failed for scenario $scenario" >&2
-    tail -50 "$app_log_path" >&2 || true
-    cleanup_app "$APP_PID"
-    exit 1
+    if [[ "$scenario" == "ghostty_terminal" ]] && capture_terminal_panel_fallback "$socket_path" "$scenario_dir" "$scenario"; then
+      printf '%s\n' "FALLBACK terminal_panel" > "$scenario_dir/screenshot-fallback.txt"
+    else
+      echo "error: screenshot failed for scenario $scenario" >&2
+      tail -50 "$app_log_path" >&2 || true
+      cleanup_app "$APP_PID"
+      exit 1
+    fi
+  else
+    screenshot_path="$(printf '%s\n' "$screenshot_response" | awk '{print $3}')"
+    cp "$screenshot_path" "$scenario_dir/full-window.png"
   fi
-  screenshot_path="$(printf '%s\n' "$screenshot_response" | awk '{print $3}')"
-  cp "$screenshot_path" "$scenario_dir/full-window.png"
 
   read_screen_response="$(socket_cmd "$socket_path" "read_screen --scrollback --lines 80" || true)"
   printf '%s\n' "$read_screen_response" > "$scenario_dir/read-screen.txt"
 
-  swift "$SCRIPT_DIR/macos-crop-png.swift" \
-    --image "$scenario_dir/full-window.png" \
-    --runtime-metadata "$runtime_metadata_path" \
-    --layout-debug "$scenario_dir/layout-debug.json" \
-    --output-dir "$scenario_dir/crops"
+  if [[ ! -f "$scenario_dir/screenshot-fallback.txt" ]]; then
+    swift "$SCRIPT_DIR/macos-crop-png.swift" \
+      --image "$scenario_dir/full-window.png" \
+      --runtime-metadata "$runtime_metadata_path" \
+      --layout-debug "$scenario_dir/layout-debug.json" \
+      --output-dir "$scenario_dir/crops"
+  fi
 
   cleanup_app "$APP_PID"
 done
