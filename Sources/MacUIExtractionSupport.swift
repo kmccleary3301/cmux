@@ -416,7 +416,7 @@ extension AppDelegate {
             }
 
         case .ghosttyTerminal:
-            let initialCommand = "printf 'cmux extraction terminal baseline\\n'; printf 'ghostty contract active\\n'; pwd; printf '\\nready\\n'"
+            let initialCommand = "printf 'cmux extraction terminal baseline\\n'; printf 'ghostty contract active\\n'; pwd; printf '\\nready\\n'; sleep 600"
             let workspace = makeWorkspace(
                 title: scenario.defaultWorkspaceTitle,
                 pinned: true,
