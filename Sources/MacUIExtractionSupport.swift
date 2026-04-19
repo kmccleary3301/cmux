@@ -126,6 +126,10 @@ private enum MacUIExtractionState {
     static var didSetup = false
 }
 
+private func macUIExtractionLog(_ message: String) {
+    fputs("mac-ui-extraction: \(message)\n", stderr)
+}
+
 extension AppDelegate {
     func setupMacUIExtractionIfNeeded() {
         let env = ProcessInfo.processInfo.environment
@@ -149,7 +153,7 @@ extension AppDelegate {
         do {
             try FileManager.default.createDirectory(at: bundleDirectory, withIntermediateDirectories: true)
         } catch {
-            dlog("mac.ui.extract mkdir failed path=\(bundleDirectory.path) error=\(error.localizedDescription)")
+            macUIExtractionLog("mkdir failed path=\(bundleDirectory.path) error=\(error.localizedDescription)")
         }
 
         let accessMode: SocketControlMode = .allowAll
@@ -456,7 +460,8 @@ extension AppDelegate {
 
     private func buildMacUIExtractionAXTree(window: NSWindow?) -> MacUIExtractionAXNode? {
         guard let window else { return nil }
-        return macUIExtractionAXNode(from: window, visited: &Set<ObjectIdentifier>(), depth: 0)
+        var visited = Set<ObjectIdentifier>()
+        return macUIExtractionAXNode(from: window, visited: &visited, depth: 0)
     }
 
     private func macUIExtractionAXNode(
@@ -465,37 +470,81 @@ extension AppDelegate {
         depth: Int
     ) -> MacUIExtractionAXNode? {
         guard depth <= 8 else { return nil }
-        guard let object = source as AnyObject? else { return nil }
+        guard let object = source as? NSObject else { return nil }
         let identifier = ObjectIdentifier(object)
         guard !visited.contains(identifier) else { return nil }
         visited.insert(identifier)
 
-        let accessible = object as? NSAccessibility
-        let children: [Any] = accessible?.accessibilityChildren() ?? []
+        let children = macUIExtractionAccessibilityChildren(object)
         let nodeChildren = children.compactMap { macUIExtractionAXNode(from: $0, visited: &visited, depth: depth + 1) }
         return MacUIExtractionAXNode(
-            role: accessible?.accessibilityRole(),
-            subrole: accessible?.accessibilitySubrole(),
-            label: accessible?.accessibilityLabel(),
-            value: macUIExtractionAccessibilityValue(accessible),
+            role: macUIExtractionAccessibilityRole(object)?.rawValue,
+            subrole: macUIExtractionAccessibilitySubrole(object)?.rawValue,
+            label: macUIExtractionAccessibilityLabel(object),
+            value: macUIExtractionAccessibilityValue(object),
             identifier: (object as? NSUserInterfaceItemIdentification)?.identifier?.rawValue,
-            frame: macUIExtractionAccessibilityFrame(accessible),
+            frame: macUIExtractionAccessibilityFrame(object),
             children: nodeChildren
         )
     }
 
-    private func macUIExtractionAccessibilityValue(_ accessible: NSAccessibility?) -> String? {
-        if let stringValue = accessible?.accessibilityValue() as? String, !stringValue.isEmpty {
+    private func macUIExtractionAccessibilityChildren(_ object: NSObject) -> [Any] {
+        guard object.responds(to: #selector(NSAccessibilityElement.accessibilityChildren)) else {
+            return []
+        }
+        return object.perform(#selector(NSAccessibilityElement.accessibilityChildren))?
+            .takeUnretainedValue() as? [Any] ?? []
+    }
+
+    private func macUIExtractionAccessibilityRole(_ object: NSObject) -> NSAccessibility.Role? {
+        guard object.responds(to: #selector(NSAccessibilityElement.accessibilityRole)) else {
+            return nil
+        }
+        return object.perform(#selector(NSAccessibilityElement.accessibilityRole))?
+            .takeUnretainedValue() as? NSAccessibility.Role
+    }
+
+    private func macUIExtractionAccessibilitySubrole(_ object: NSObject) -> NSAccessibility.Subrole? {
+        guard object.responds(to: #selector(NSAccessibilityElement.accessibilitySubrole)) else {
+            return nil
+        }
+        return object.perform(#selector(NSAccessibilityElement.accessibilitySubrole))?
+            .takeUnretainedValue() as? NSAccessibility.Subrole
+    }
+
+    private func macUIExtractionAccessibilityLabel(_ object: NSObject) -> String? {
+        guard object.responds(to: #selector(NSAccessibilityElement.accessibilityLabel)) else {
+            return nil
+        }
+        return object.perform(#selector(NSAccessibilityElement.accessibilityLabel))?
+            .takeUnretainedValue() as? String
+    }
+
+    private func macUIExtractionAccessibilityValue(_ object: NSObject) -> String? {
+        guard object.responds(to: #selector(NSAccessibilityElement.accessibilityValue)) else {
+            return nil
+        }
+        let value = object.perform(#selector(NSAccessibilityElement.accessibilityValue))?
+            .takeUnretainedValue()
+        if let stringValue = value as? String, !stringValue.isEmpty {
             return stringValue
         }
-        if let numberValue = accessible?.accessibilityValue() as? NSNumber {
+        if let numberValue = value as? NSNumber {
             return numberValue.stringValue
         }
         return nil
     }
 
-    private func macUIExtractionAccessibilityFrame(_ accessible: NSAccessibility?) -> MacUIExtractionRect? {
-        guard let frame = accessible?.accessibilityFrame(), !frame.isNull else { return nil }
+    private func macUIExtractionAccessibilityFrame(_ object: NSObject) -> MacUIExtractionRect? {
+        guard object.responds(to: #selector(NSAccessibilityElement.accessibilityFrame)) else {
+            return nil
+        }
+        guard let frameValue = object.perform(#selector(NSAccessibilityElement.accessibilityFrame))?
+            .takeUnretainedValue() as? NSValue else {
+            return nil
+        }
+        let frame = frameValue.rectValue
+        guard !frame.isNull else { return nil }
         return MacUIExtractionRect(frame)
     }
 
