@@ -142,6 +142,42 @@ private func macUIExtractionLog(_ message: String) {
 }
 
 extension AppDelegate {
+    private func resolveMacUIExtractionBindings() -> (
+        tabManager: TabManager,
+        sidebarState: SidebarState,
+        context: MacUIExtractionContext
+    )? {
+        guard let context = MacUIExtractionState.context else {
+            macUIExtractionLog("resolve bindings failed: missing context")
+            return nil
+        }
+
+        let preferredWindow = NSApp.keyWindow ?? NSApp.mainWindow ?? NSApp.windows.first
+        let synchronizedManager = synchronizeActiveMainWindowContext(preferredWindow: preferredWindow)
+        let resolvedManager = synchronizedManager
+            ?? tabManager
+            ?? mainWindowContexts.values.first(where: { resolvedWindow(for: $0) != nil })?.tabManager
+            ?? mainWindowContexts.values.first?.tabManager
+
+        guard let resolvedManager else {
+            macUIExtractionLog("resolve bindings failed: missing tabManager")
+            return nil
+        }
+
+        let resolvedSidebar = sidebarState
+            ?? mainWindowContexts.values.first(where: { $0.tabManager === resolvedManager })?.sidebarState
+            ?? mainWindowContexts.values.first(where: { resolvedWindow(for: $0) != nil })?.sidebarState
+            ?? mainWindowContexts.values.first?.sidebarState
+
+        guard let resolvedSidebar else {
+            macUIExtractionLog("resolve bindings failed: missing sidebarState")
+            return nil
+        }
+
+        TerminalController.shared.setActiveTabManager(resolvedManager)
+        return (resolvedManager, resolvedSidebar, context)
+    }
+
     func setupMacUIExtractionIfNeeded() {
         let env = ProcessInfo.processInfo.environment
         guard env[MacUIExtractionEnvironment.modeKey] == "1" else { return }
@@ -206,11 +242,12 @@ extension AppDelegate {
         }
 
         DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(readyDelayMs)) { [weak self] in
-            guard let self, let tabManager = self.tabManager, let sidebarState = self.sidebarState else { return }
+            guard let self,
+                  let bindings = self.resolveMacUIExtractionBindings() else { return }
             self.writeMacUIExtractionArtifacts(
                 scenario: scenario,
-                tabManager: tabManager,
-                sidebarState: sidebarState,
+                tabManager: bindings.tabManager,
+                sidebarState: bindings.sidebarState,
                 bundleDirectory: bundleDirectory,
                 runtimeMetadataURL: runtimeMetadataURL,
                 axTreeURL: axTreeURL,
@@ -224,7 +261,10 @@ extension AppDelegate {
 
     @discardableResult
     func materializeActiveMacUIExtractionScenario() -> Bool {
-        guard let tabManager, let sidebarState, let context = MacUIExtractionState.context else { return false }
+        guard let bindings = resolveMacUIExtractionBindings() else { return false }
+        let tabManager = bindings.tabManager
+        let sidebarState = bindings.sidebarState
+        let context = bindings.context
         macUIExtractionLog("materialize start scenario=\(context.scenario.rawValue) existingWorkspaces=\(tabManager.tabs.count)")
         materializeMacUIExtractionScenario(
             scenario: context.scenario,
@@ -239,18 +279,18 @@ extension AppDelegate {
 
     @discardableResult
     func refreshActiveMacUIExtractionArtifacts(stage: String = "ready") -> Bool {
-        guard let tabManager, let sidebarState, let context = MacUIExtractionState.context else { return false }
+        guard let bindings = resolveMacUIExtractionBindings() else { return false }
         writeMacUIExtractionArtifacts(
-            scenario: context.scenario,
-            tabManager: tabManager,
-            sidebarState: sidebarState,
-            bundleDirectory: context.bundleDirectory,
-            runtimeMetadataURL: context.runtimeMetadataURL,
-            axTreeURL: context.axTreeURL,
-            socketPath: context.socketPath,
+            scenario: bindings.context.scenario,
+            tabManager: bindings.tabManager,
+            sidebarState: bindings.sidebarState,
+            bundleDirectory: bindings.context.bundleDirectory,
+            runtimeMetadataURL: bindings.context.runtimeMetadataURL,
+            axTreeURL: bindings.context.axTreeURL,
+            socketPath: bindings.context.socketPath,
             stage: stage
         )
-        macUIExtractionLog("refresh stage=\(stage) scenario=\(context.scenario.rawValue)")
+        macUIExtractionLog("refresh stage=\(stage) scenario=\(bindings.context.scenario.rawValue)")
         return true
     }
 
