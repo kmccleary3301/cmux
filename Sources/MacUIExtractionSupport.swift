@@ -11,8 +11,10 @@ private enum MacUIExtractionEnvironment {
     static let axTreePathKey = "CMUX_UI_EXTRACTION_AX_TREE_PATH"
     static let socketPathKey = "CMUX_UI_EXTRACTION_SOCKET_PATH"
     static let readyDelayMsKey = "CMUX_UI_EXTRACTION_READY_DELAY_MS"
+    static let materializeDelayMsKey = "CMUX_UI_EXTRACTION_MATERIALIZE_DELAY_MS"
 
     static let defaultSocketPath = "/tmp/cmux-ui-extraction.sock"
+    static let defaultMaterializeDelayMs = 700
     static let defaultReadyDelayMs = 1600
 }
 
@@ -147,6 +149,8 @@ extension AppDelegate {
         let axTreeURL = macUIExtractionAXTreeURL(bundleDirectory: bundleDirectory, environment: env)
         let socketPath = env[MacUIExtractionEnvironment.socketPathKey]
             ?? MacUIExtractionEnvironment.defaultSocketPath
+        let materializeDelayMs = Int(env[MacUIExtractionEnvironment.materializeDelayMsKey] ?? "")
+            ?? MacUIExtractionEnvironment.defaultMaterializeDelayMs
         let readyDelayMs = Int(env[MacUIExtractionEnvironment.readyDelayMsKey] ?? "")
             ?? MacUIExtractionEnvironment.defaultReadyDelayMs
 
@@ -163,7 +167,7 @@ extension AppDelegate {
             accessMode: accessMode
         )
 
-        DispatchQueue.main.async { [weak self] in
+        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(materializeDelayMs)) { [weak self] in
             guard let self else { return }
             self.materializeMacUIExtractionScenario(
                 scenario: scenario,
