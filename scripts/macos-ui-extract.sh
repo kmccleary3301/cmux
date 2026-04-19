@@ -139,6 +139,7 @@ for scenario in "${SCENARIOS[@]}"; do
 
   echo "==> scenario: $scenario"
   CMUX_SOCKET_MODE=allowAll \
+  CMUX_SOCKET_PATH="$socket_path" \
   CMUX_UI_TEST_MODE=1 \
   CMUX_UI_EXTRACTION_MODE=1 \
   CMUX_UI_EXTRACTION_SCENARIO="$scenario" \
