@@ -127,6 +127,8 @@ private enum MacUIExtractionScenario: String, CaseIterable {
 private enum MacUIExtractionState {
     static var didSetup = false
     static var context: MacUIExtractionContext?
+    static var tabManager: TabManager?
+    static var sidebarState: SidebarState?
 }
 
 private struct MacUIExtractionContext {
@@ -156,6 +158,7 @@ extension AppDelegate {
         let synchronizedManager = synchronizeActiveMainWindowContext(preferredWindow: preferredWindow)
         let resolvedManager = synchronizedManager
             ?? tabManager
+            ?? MacUIExtractionState.tabManager
 
         guard let resolvedManager else {
             macUIExtractionLog("resolve bindings failed: missing tabManager")
@@ -163,6 +166,7 @@ extension AppDelegate {
         }
 
         let resolvedSidebar = sidebarState
+            ?? MacUIExtractionState.sidebarState
 
         guard let resolvedSidebar else {
             macUIExtractionLog("resolve bindings failed: missing sidebarState")
@@ -207,6 +211,8 @@ extension AppDelegate {
             axTreeURL: axTreeURL,
             socketPath: socketPath
         )
+        MacUIExtractionState.tabManager = tabManager
+        MacUIExtractionState.sidebarState = sidebarState
 
         let accessMode: SocketControlMode = .allowAll
         TerminalController.shared.start(
