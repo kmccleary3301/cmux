@@ -536,14 +536,16 @@ extension AppDelegate {
     }
 
     private func macUIExtractionAccessibilityFrame(_ object: NSObject) -> MacUIExtractionRect? {
-        guard object.responds(to: #selector(NSAccessibilityElement.accessibilityFrame)) else {
+        let frame: NSRect
+        if let view = object as? NSView {
+            frame = view.accessibilityFrame()
+        } else if let window = object as? NSWindow {
+            frame = window.accessibilityFrame()
+        } else if let element = object as? NSAccessibilityElement {
+            frame = element.accessibilityFrame()
+        } else {
             return nil
         }
-        guard let frameValue = object.perform(#selector(NSAccessibilityElement.accessibilityFrame))?
-            .takeUnretainedValue() as? NSValue else {
-            return nil
-        }
-        let frame = frameValue.rectValue
         guard !frame.isNull else { return nil }
         return MacUIExtractionRect(frame)
     }
