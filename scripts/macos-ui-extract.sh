@@ -179,10 +179,15 @@ for scenario in "${SCENARIOS[@]}"; do
   sleep "$STABILIZE_SECONDS"
 
   socket_cmd "$socket_path" "ping" > "$scenario_dir/socket-ping.txt"
+  socket_cmd "$socket_path" "current_workspace" > "$scenario_dir/current-workspace.txt" || true
+  socket_cmd "$socket_path" "list_workspaces" > "$scenario_dir/list-workspaces.txt" || true
+  socket_cmd "$socket_path" "list_surfaces" > "$scenario_dir/list-surfaces.txt" || true
+  socket_cmd "$socket_path" "list_panes" > "$scenario_dir/list-panes.txt" || true
   layout_response="$(socket_cmd "$socket_path" "layout_debug")"
   if [[ "$layout_response" != OK\ * ]]; then
     echo "$layout_response" > "$scenario_dir/layout-debug-error.txt"
     echo "error: layout_debug failed for scenario $scenario" >&2
+    tail -50 "$app_log_path" >&2 || true
     cleanup_app "$APP_PID"
     exit 1
   fi
@@ -192,6 +197,7 @@ for scenario in "${SCENARIOS[@]}"; do
   if [[ "$screenshot_response" != OK\ * ]]; then
     echo "$screenshot_response" > "$scenario_dir/screenshot-error.txt"
     echo "error: screenshot failed for scenario $scenario" >&2
+    tail -50 "$app_log_path" >&2 || true
     cleanup_app "$APP_PID"
     exit 1
   fi

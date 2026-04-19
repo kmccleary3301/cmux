@@ -109,6 +109,7 @@ jobs:
           echo "CMUX_UI_EXTRACTION_OUTPUT_DIR=$OUTPUT_DIR" >> "$GITHUB_ENV"
 
       - name: Upload extraction artifacts
+        if: always()
         uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4
         with:
           name: macos-ui-extraction-${{ github.run_id }}
