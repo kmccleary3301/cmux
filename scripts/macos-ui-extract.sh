@@ -119,8 +119,27 @@ capture_terminal_panel_fallback() {
   local scenario_dir="$2"
   local scenario="$3"
 
+  local list_surfaces_response panel_id
+  list_surfaces_response="$(socket_cmd "$socket_path" "list_surfaces" || true)"
+  printf '%s\n' "$list_surfaces_response" > "$scenario_dir/panel-snapshot-list-surfaces.txt"
+  panel_id="$(printf '%s\n' "$list_surfaces_response" | python3 - <<'PY'
+import re
+import sys
+
+for line in sys.stdin:
+    match = re.search(r'([0-9A-Fa-f-]{36})', line)
+    if match:
+        print(match.group(1))
+        raise SystemExit(0)
+raise SystemExit(1)
+PY
+)"
+  if [[ -z "$panel_id" ]]; then
+    return 1
+  fi
+
   local panel_snapshot_response
-  panel_snapshot_response="$(socket_cmd "$socket_path" "panel_snapshot 0 ${scenario}_panel" || true)"
+  panel_snapshot_response="$(socket_cmd "$socket_path" "panel_snapshot $panel_id ${scenario}_panel" || true)"
   printf '%s\n' "$panel_snapshot_response" > "$scenario_dir/panel-snapshot-response.txt"
   if [[ "$panel_snapshot_response" != OK\ * ]]; then
     return 1
