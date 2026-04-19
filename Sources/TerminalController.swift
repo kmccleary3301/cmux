@@ -1728,6 +1728,14 @@ class TerminalController {
         case "simulate_app_active":
             return simulateAppDidBecomeActive()
 
+#if DEBUG
+        case "debug_ui_extraction_materialize":
+            return debugUIExtractionMaterialize()
+
+        case "debug_ui_extraction_refresh":
+            return debugUIExtractionRefresh(args)
+#endif
+
         case "set_status":
             return setStatus(args)
 
@@ -12207,6 +12215,25 @@ class TerminalController {
     }
 
 #if DEBUG
+    private func debugUIExtractionMaterialize() -> String {
+        var success = false
+        DispatchQueue.main.sync {
+            success = AppDelegate.shared?.materializeActiveMacUIExtractionScenario() ?? false
+        }
+        return success ? "OK" : "ERROR: UI extraction context unavailable"
+    }
+
+    private func debugUIExtractionRefresh(_ args: String) -> String {
+        let stage = args.trimmingCharacters(in: .whitespacesAndNewlines)
+        var success = false
+        DispatchQueue.main.sync {
+            success = AppDelegate.shared?.refreshActiveMacUIExtractionArtifacts(
+                stage: stage.isEmpty ? "refreshed" : stage
+            ) ?? false
+        }
+        return success ? "OK" : "ERROR: UI extraction context unavailable"
+    }
+
     private func focusFromNotification(_ args: String) -> String {
         guard let tabManager else { return "ERROR: TabManager not available" }
         let trimmed = args.trimmingCharacters(in: .whitespacesAndNewlines)

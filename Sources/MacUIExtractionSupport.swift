@@ -126,6 +126,15 @@ private enum MacUIExtractionScenario: String, CaseIterable {
 
 private enum MacUIExtractionState {
     static var didSetup = false
+    static var context: MacUIExtractionContext?
+}
+
+private struct MacUIExtractionContext {
+    let scenario: MacUIExtractionScenario
+    let bundleDirectory: URL
+    let runtimeMetadataURL: URL
+    let axTreeURL: URL
+    let socketPath: String
 }
 
 private func macUIExtractionLog(_ message: String) {
@@ -159,6 +168,14 @@ extension AppDelegate {
         } catch {
             macUIExtractionLog("mkdir failed path=\(bundleDirectory.path) error=\(error.localizedDescription)")
         }
+
+        MacUIExtractionState.context = MacUIExtractionContext(
+            scenario: scenario,
+            bundleDirectory: bundleDirectory,
+            runtimeMetadataURL: runtimeMetadataURL,
+            axTreeURL: axTreeURL,
+            socketPath: socketPath
+        )
 
         let accessMode: SocketControlMode = .allowAll
         TerminalController.shared.start(
@@ -205,6 +222,38 @@ extension AppDelegate {
         }
     }
 
+    @discardableResult
+    func materializeActiveMacUIExtractionScenario() -> Bool {
+        guard let tabManager, let sidebarState, let context = MacUIExtractionState.context else { return false }
+        macUIExtractionLog("materialize start scenario=\(context.scenario.rawValue) existingWorkspaces=\(tabManager.tabs.count)")
+        materializeMacUIExtractionScenario(
+            scenario: context.scenario,
+            tabManager: tabManager,
+            notificationStore: notificationStore,
+            sidebarState: sidebarState,
+            bundleDirectory: context.bundleDirectory
+        )
+        macUIExtractionLog("materialize finish scenario=\(context.scenario.rawValue) workspaces=\(tabManager.tabs.count)")
+        return true
+    }
+
+    @discardableResult
+    func refreshActiveMacUIExtractionArtifacts(stage: String = "ready") -> Bool {
+        guard let tabManager, let sidebarState, let context = MacUIExtractionState.context else { return false }
+        writeMacUIExtractionArtifacts(
+            scenario: context.scenario,
+            tabManager: tabManager,
+            sidebarState: sidebarState,
+            bundleDirectory: context.bundleDirectory,
+            runtimeMetadataURL: context.runtimeMetadataURL,
+            axTreeURL: context.axTreeURL,
+            socketPath: context.socketPath,
+            stage: stage
+        )
+        macUIExtractionLog("refresh stage=\(stage) scenario=\(context.scenario.rawValue)")
+        return true
+    }
+
     private func materializeMacUIExtractionScenario(
         scenario: MacUIExtractionScenario,
         tabManager: TabManager,
@@ -247,6 +296,7 @@ extension AppDelegate {
                 workspace.updatePanelDirectory(panelId: focusedPanel, directory: directory)
                 workspace.setPanelCustomTitle(panelId: focusedPanel, title: "Terminal")
             }
+            macUIExtractionLog("workspace created id=\(workspace.id.uuidString) title=\(workspace.title) selected=\(select) pinned=\(pinned)")
             return workspace
         }
 
@@ -273,6 +323,9 @@ extension AppDelegate {
                ) {
                 workspace.setPanelCustomTitle(panelId: terminalID, title: "Terminal")
                 workspace.setPanelCustomTitle(panelId: browserID, title: "Browser")
+                macUIExtractionLog("built_in_browser split created workspace=\(workspace.id.uuidString) terminal=\(terminalID.uuidString) browser=\(browserID.uuidString)")
+            } else {
+                macUIExtractionLog("built_in_browser split FAILED workspace=\(workspace.id.uuidString)")
             }
             _ = makeWorkspace(title: "Secondary", select: false)
 
@@ -326,6 +379,9 @@ extension AppDelegate {
                     subtitle: "New page",
                     body: "A browser pane has fresh content."
                 )
+                macUIExtractionLog("notifications docs browser created workspace=\(docs.id.uuidString) browser=\(browserID.uuidString)")
+            } else {
+                macUIExtractionLog("notifications docs browser FAILED workspace=\(docs.id.uuidString)")
             }
 
         case .splitLayout:
@@ -340,6 +396,7 @@ extension AppDelegate {
                 focus: false
             ) {
                 workspace.setPanelCustomTitle(panelId: rightTerminalID, title: "Shell B")
+                macUIExtractionLog("split_layout terminal split created workspace=\(workspace.id.uuidString) terminal=\(rightTerminalID.uuidString)")
                 if let browserID = tabManager.newBrowserSplit(
                     tabId: workspace.id,
                     fromPanelId: rightTerminalID,
@@ -350,7 +407,12 @@ extension AppDelegate {
                     focus: false
                 ) {
                     workspace.setPanelCustomTitle(panelId: browserID, title: "Browser")
+                    macUIExtractionLog("split_layout browser split created workspace=\(workspace.id.uuidString) browser=\(browserID.uuidString)")
+                } else {
+                    macUIExtractionLog("split_layout browser split FAILED workspace=\(workspace.id.uuidString)")
                 }
+            } else {
+                macUIExtractionLog("split_layout terminal split FAILED workspace=\(workspace.id.uuidString)")
             }
 
         case .ghosttyTerminal:

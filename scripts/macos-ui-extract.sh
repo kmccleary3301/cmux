@@ -164,7 +164,18 @@ for scenario in "${SCENARIOS[@]}"; do
     exit 1
   fi
 
+  materialize_response="$(socket_cmd "$socket_path" "debug_ui_extraction_materialize" || true)"
+  if [[ "$materialize_response" != "OK" ]]; then
+    echo "error: debug_ui_extraction_materialize failed for scenario $scenario" >&2
+    printf '%s\n' "$materialize_response" > "$scenario_dir/materialize-error.txt"
+    tail -50 "$app_log_path" >&2 || true
+    cleanup_app "$APP_PID"
+    exit 1
+  fi
+
   post_seed_actions "$scenario" "$socket_path"
+  refresh_response="$(socket_cmd "$socket_path" "debug_ui_extraction_refresh post_seed" || true)"
+  printf '%s\n' "$refresh_response" > "$scenario_dir/refresh-response.txt"
   sleep "$STABILIZE_SECONDS"
 
   socket_cmd "$socket_path" "ping" > "$scenario_dir/socket-ping.txt"
