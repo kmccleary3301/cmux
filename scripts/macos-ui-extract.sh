@@ -264,6 +264,13 @@ for scenario in "${SCENARIOS[@]}"; do
       --output-dir "$scenario_dir/crops"
   fi
 
+  python3 "$SCRIPT_DIR/macos-build-geometry-manifest.py" \
+    --runtime-metadata "$runtime_metadata_path" \
+    --layout-debug "$scenario_dir/layout-debug.json" \
+    --ax-tree "$ax_tree_path" \
+    --crops-dir "$scenario_dir/crops" \
+    --output "$scenario_dir/geometry-manifest.json"
+
   cleanup_app "$APP_PID"
 done
 
