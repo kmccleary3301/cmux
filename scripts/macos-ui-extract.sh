@@ -278,4 +278,7 @@ done
 python3 "$SCRIPT_DIR/macos-build-vault-manifest.py" \
   --bundle-root "$OUTPUT_DIR"
 
+python3 "$SCRIPT_DIR/macos-build-comparison-contracts.py" \
+  --bundle-root "$OUTPUT_DIR"
+
 echo "Extraction bundle written to $OUTPUT_DIR"
