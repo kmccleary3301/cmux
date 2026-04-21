@@ -27,6 +27,7 @@ struct LayoutPixelRect: Decodable {
 struct LayoutSelectedPanel: Decodable {
     let panelType: String
     let viewFrame: LayoutPixelRect?
+    let paneFrame: LayoutPixelRect?
 }
 
 struct LayoutResponse: Decodable {
@@ -109,6 +110,39 @@ func cropRect(
     return rect.integral.intersection(CGRect(origin: .zero, size: imageSize))
 }
 
+func intersects(_ lhs: LayoutPixelRect, _ rhs: LayoutPixelRect) -> Bool {
+    let lhsMaxX = lhs.x + lhs.width
+    let lhsMaxY = lhs.y + lhs.height
+    let rhsMaxX = rhs.x + rhs.width
+    let rhsMaxY = rhs.y + rhs.height
+    return lhs.x < rhsMaxX && lhsMaxX > rhs.x && lhs.y < rhsMaxY && lhsMaxY > rhs.y
+}
+
+func resolvedPanelRect(_ panel: LayoutSelectedPanel) -> LayoutPixelRect? {
+    guard let viewFrame = panel.viewFrame else { return nil }
+    guard let paneFrame = panel.paneFrame else { return viewFrame }
+
+    if intersects(viewFrame, paneFrame) {
+        return viewFrame
+    }
+
+    let resolvedX: Double
+    if viewFrame.x >= paneFrame.x {
+        resolvedX = viewFrame.x
+    } else {
+        resolvedX = paneFrame.x + viewFrame.x
+    }
+
+    let resolvedY: Double
+    if viewFrame.y >= paneFrame.y {
+        resolvedY = viewFrame.y
+    } else {
+        resolvedY = paneFrame.y + viewFrame.y
+    }
+
+    return LayoutPixelRect(x: resolvedX, y: resolvedY, width: viewFrame.width, height: viewFrame.height)
+}
+
 func sidebarRect(metadata: RuntimeMetadata, imageSize: CGSize) -> CGRect? {
     guard metadata.sidebarVisible else { return nil }
     let width = min(CGFloat(metadata.sidebarWidth), imageSize.width)
@@ -166,11 +200,11 @@ func run() throws {
     if let windowFrame = metadata.mainWindowFrame {
         let terminalRect = layout.selectedPanels
             .first(where: { $0.panelType == "terminal" })
-            .flatMap(\.viewFrame)
+            .flatMap(resolvedPanelRect)
             .map { cropRect(from: $0, windowFrame: windowFrame, imageSize: imageSize) }
         let browserRect = layout.selectedPanels
             .first(where: { $0.panelType == "browser" })
-            .flatMap(\.viewFrame)
+            .flatMap(resolvedPanelRect)
             .map { cropRect(from: $0, windowFrame: windowFrame, imageSize: imageSize) }
         try writeCrop(named: "terminal", rect: terminalRect, cgImage: cgImage, outputDirectory: arguments.outputDirectory)
         try writeCrop(named: "browser", rect: browserRect, cgImage: cgImage, outputDirectory: arguments.outputDirectory)
