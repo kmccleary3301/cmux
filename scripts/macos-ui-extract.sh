@@ -261,6 +261,7 @@ for scenario in "${SCENARIOS[@]}"; do
       --image "$scenario_dir/full-window.png" \
       --runtime-metadata "$runtime_metadata_path" \
       --layout-debug "$scenario_dir/layout-debug.json" \
+      --ax-tree "$ax_tree_path" \
       --output-dir "$scenario_dir/crops"
   fi
 

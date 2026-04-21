@@ -34,10 +34,17 @@ struct LayoutResponse: Decodable {
     let selectedPanels: [LayoutSelectedPanel]
 }
 
+struct AXNode: Decodable {
+    let role: String?
+    let frame: RuntimeRect?
+    let children: [AXNode]
+}
+
 struct Arguments {
     let imagePath: String
     let runtimeMetadataPath: String
     let layoutDebugPath: String
+    let axTreePath: String?
     let outputDirectory: String
 }
 
@@ -62,6 +69,7 @@ func parseArguments() throws -> Arguments {
     var imagePath: String?
     var runtimeMetadataPath: String?
     var layoutDebugPath: String?
+    var axTreePath: String?
     var outputDirectory: String?
 
     var iterator = CommandLine.arguments.dropFirst().makeIterator()
@@ -73,6 +81,8 @@ func parseArguments() throws -> Arguments {
             runtimeMetadataPath = iterator.next()
         case "--layout-debug":
             layoutDebugPath = iterator.next()
+        case "--ax-tree":
+            axTreePath = iterator.next()
         case "--output-dir":
             outputDirectory = iterator.next()
         default:
@@ -82,7 +92,7 @@ func parseArguments() throws -> Arguments {
 
     guard let imagePath, let runtimeMetadataPath, let layoutDebugPath, let outputDirectory else {
         throw CropError.invalidArguments(
-            "Usage: macos-crop-png.swift --image <png> --runtime-metadata <json> --layout-debug <json> --output-dir <dir>"
+            "Usage: macos-crop-png.swift --image <png> --runtime-metadata <json> --layout-debug <json> [--ax-tree <json>] --output-dir <dir>"
         )
     }
 
@@ -90,6 +100,7 @@ func parseArguments() throws -> Arguments {
         imagePath: imagePath,
         runtimeMetadataPath: runtimeMetadataPath,
         layoutDebugPath: layoutDebugPath,
+        axTreePath: axTreePath,
         outputDirectory: outputDirectory
     )
 }
@@ -143,6 +154,23 @@ func resolvedPanelRect(_ panel: LayoutSelectedPanel) -> LayoutPixelRect? {
     return LayoutPixelRect(x: resolvedX, y: resolvedY, width: viewFrame.width, height: viewFrame.height)
 }
 
+func flattenAXNodes(_ node: AXNode) -> [AXNode] {
+    [node] + node.children.flatMap(flattenAXNodes)
+}
+
+func axTerminalFallbackRect(path: String?) throws -> LayoutPixelRect? {
+    guard let path else { return nil }
+    let axTree = try decodeJSON(AXNode.self, path: path)
+    let preferredRoles = ["AXTextArea", "AXScrollArea"]
+    let nodes = flattenAXNodes(axTree)
+    for role in preferredRoles {
+        if let match = nodes.first(where: { $0.role == role }), let frame = match.frame {
+            return LayoutPixelRect(x: frame.x, y: frame.y, width: frame.width, height: frame.height)
+        }
+    }
+    return nil
+}
+
 func sidebarRect(metadata: RuntimeMetadata, imageSize: CGSize) -> CGRect? {
     guard metadata.sidebarVisible else { return nil }
     let width = min(CGFloat(metadata.sidebarWidth), imageSize.width)
@@ -178,6 +206,7 @@ func run() throws {
     let arguments = try parseArguments()
     let metadata = try decodeJSON(RuntimeMetadata.self, path: arguments.runtimeMetadataPath)
     let layout = try decodeJSON(LayoutResponse.self, path: arguments.layoutDebugPath)
+    let axTerminalRect = try axTerminalFallbackRect(path: arguments.axTreePath)
 
     let imageURL = URL(fileURLWithPath: arguments.imagePath)
     guard let image = NSImage(contentsOf: imageURL) else {
@@ -201,6 +230,7 @@ func run() throws {
         let terminalRect = layout.selectedPanels
             .first(where: { $0.panelType == "terminal" })
             .flatMap(resolvedPanelRect)
+            ?? axTerminalRect
             .map { cropRect(from: $0, windowFrame: windowFrame, imageSize: imageSize) }
         let browserRect = layout.selectedPanels
             .first(where: { $0.panelType == "browser" })
