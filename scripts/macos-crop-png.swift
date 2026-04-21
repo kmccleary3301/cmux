@@ -227,10 +227,10 @@ func run() throws {
     try writeCrop(named: "sidebar", rect: sidebarRect(metadata: metadata, imageSize: imageSize), cgImage: cgImage, outputDirectory: arguments.outputDirectory)
 
     if let windowFrame = metadata.mainWindowFrame {
-        let terminalRect = layout.selectedPanels
+        let terminalPanelRect = layout.selectedPanels
             .first(where: { $0.panelType == "terminal" })
             .flatMap(resolvedPanelRect)
-            ?? axTerminalRect
+        let terminalRect = (terminalPanelRect ?? axTerminalRect)
             .map { cropRect(from: $0, windowFrame: windowFrame, imageSize: imageSize) }
         let browserRect = layout.selectedPanels
             .first(where: { $0.panelType == "browser" })
