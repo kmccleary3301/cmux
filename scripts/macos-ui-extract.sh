@@ -274,4 +274,7 @@ for scenario in "${SCENARIOS[@]}"; do
   cleanup_app "$APP_PID"
 done
 
+python3 "$SCRIPT_DIR/macos-build-vault-manifest.py" \
+  --bundle-root "$OUTPUT_DIR"
+
 echo "Extraction bundle written to $OUTPUT_DIR"
